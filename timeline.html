@@ -1,1 +1,49 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/>
+  <link rel="stylesheet" href="./assets/styles.css"/>
+  <title>Our Timeline</title>
+  <!-- PapaParse to read CSV easily -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const CSV_URL = "PASTE_YOUR_PUBLISHED_CSV_LINK_HERE"; // ends with output=csv
+      const listEl = document.getElementById('list');
+
+      fetch(CSV_URL)
+        .then(r => r.text())
+        .then(text => {
+          const parsed = Papa.parse(text, { header: true, dynamicTyping: true });
+          let rows = parsed.data.filter(r => r.Date && r.Title);
+          // sort newest → oldest
+          rows.sort((a,b) => new Date(b.Date) - new Date(a.Date));
+          listEl.innerHTML = rows.map(r => `
+            <article class="card">
+              <div class="small">${r.Date}</div>
+              <h3>${r.Title}</h3>
+              ${r['Photo URL'] ? `<img alt="" src="${r['Photo URL']}">` : ``}
+              <p>${r.Caption || ""}</p>
+              ${r['Audio URL'] ? `<audio controls src="${r['Audio URL']}"></audio>` : ``}
+            </article>
+          `).join("");
+        })
+        .catch(err => { listEl.innerHTML = `<p>Could not load memories 😢</p>`; console.error(err); });
+    });
+  </script>
+</head>
+<body class="wrap">
+  <main style="max-width:960px;width:100%">
+    <h1>Our memories</h1>
+    <p class="small">Add yours via the form → <a href="./add.html">here</a>.</p>
+    <section id="list" class="grid mem" aria-live="polite"></section>
+    <nav class="mini">
+      <a href="./quiz.html">Take the mini-quiz → unlock letters</a>
+      <a href="./index.html">Back home</a>
+    </nav>
+  </main>
+</body>
+</html>
 
