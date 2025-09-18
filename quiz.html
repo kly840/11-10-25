@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/><link rel="stylesheet" href="./assets/styles.css"/>
+  <title>Mini-quiz</title>
+</head>
+<body class="wrap">
+  <main style="max-width:720px;margin:0 auto">
+    <h1>Mini-quiz 🎯</h1>
+    <form id="quiz" class="card">
+      <p><strong>1)</strong> Our first call ended at what time?</p>
+      <input name="q1" placeholder="e.g., 02:13 AM" required />
+      <p><strong>2)</strong> Where did we see the broken umbrella?</p>
+      <input name="q2" placeholder="place" required />
+      <p><strong>3)</strong> The safe-word on our first trip?</p>
+      <input name="q3" placeholder="word" required />
+      <button class="btn" type="submit">Check</button>
+      <p id="msg" class="small"></p>
+    </form>
+
+    <section id="letters" class="hidden">
+      <h2>Unlocked Letters ✉️</h2>
+      <div class="grid">
+        <a class="btn" href="./letters/letter-1.html">Letter 1</a>
+        <a class="btn" href="./letters/letter-2.html">Letter 2</a>
+      </div>
+    </section>
+    <p class="mini"><a href="./index.html">Home</a></p>
+  </main>
+
+  <script>
+    const ANSWERS = {
+      q1: ["2:13 am","02:13 am","02:13"], // multiple accepted
+      q2: ["bus stop"],
+      q3: ["pineapple"]
+    };
+
+    const form = document.getElementById('quiz');
+    const msg  = document.getElementById('msg');
+    const gate = document.getElementById('letters');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const ok = [...data.entries()].every(([k,v]) => {
+        const a = (v||"").toString().trim().toLowerCase();
+        return (ANSWERS[k]||[]).some(x => x === a);
+      });
+      if (ok) {
+        msg.textContent = "Correct! Letters unlocked 💖";
+        gate.classList.remove('hidden');
+        form.querySelector('button').disabled = true;
+      } else {
+        msg.textContent = "Hmm not yet — try again 😉";
+      }
+    });
+  </script>
+</body>
+</html>
