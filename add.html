@@ -1,1 +1,29 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/><link rel="stylesheet" href="./assets/styles.css"/>
+  <title>Add a memory</title>
+</head>
+<body class="wrap center">
+  <h1>Share your memory 💌</h1>
+  <p>It goes straight into our timeline.</p>
+  <!-- EITHER: Link the Google Form -->
+  <p><a class="btn" href="PASTE_YOUR_GOOGLE_FORM_LINK" target="_blank" rel="noopener">Open the form</a></p>
+
+  <!-- OR: Use Formspree (replace {form_id}) -->
+  <div class="card" style="max-width:560px;margin:24px auto;text-align:left">
+    <form action="https://formspree.io/f/{form_id}" method="POST">
+      <label class="small">Date <input name="Date" type="date" required></label><br>
+      <label class="small">Title <input name="Title" required></label><br>
+      <label class="small">Caption <textarea name="Caption" rows="3"></textarea></label><br>
+      <label class="small">Photo URL <input name="Photo URL" type="url"></label><br>
+      <label class="small">Audio URL <input name="Audio URL" type="url"></label><br>
+      <button class="btn" type="submit">Send</button>
+    </form>
+    <p class="small">Using Formspree lets static sites accept form posts without a server.</p>
+  </div>
+  <p class="mini"><a href="./timeline.html">Back to timeline</a></p>
+</body>
+</html>
 
