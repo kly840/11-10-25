@@ -147,10 +147,10 @@
       const data = new FormData(form);
 
       if(!isAllCorrect(data)){
-        msg.textContent = "Hmm not yet — try again 😉";
+        msg.textContent = "Nahhh, try again! You don't love me that much🙄";
         return;
       }
-      msg.textContent = "Correct! Unlocking letter… 💖";
+      msg.textContent = "Ghê zạ đúng rùi! Unlocking letter… 💖";
       confetti();
 
       const token = await buildCanonicalToken();
