@@ -1,69 +1,56 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="robots" content="noindex" />
-  <title>Our Timeline — 11·10·25</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/>
+  <title>Our Memory</title>
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="./assets/styles.css" />
-
-  <!-- PapaParse để đọc CSV -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/styles.css"/>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
   <header>
-    <h1>Our memories</h1>
-    <p class="small">Add yours via the form → <a href="./add.html">here</a>.</p>
+    <h1>our memories together &gt;&lt;</h1>
+    <p class="small">You can add yours via this form → <a href="PASTE_YOUR_GOOGLE_FORM_LINK" target="_blank" rel="noopener">Here</a></p>
   </header>
 
   <main>
     <div id="status"></div>
-
-    <!-- Gallery container -->
     <section id="list" class="gallery" aria-live="polite"></section>
 
-    <!-- Load more -->
     <div style="text-align:center;margin-top:16px">
-      <button id="loadMore" class="btn">Load more</button>
+      <button id="loadMore" class="btn">Next Page</button>
     </div>
 
-    <nav class="mini" style="margin-top:16px; display:flex; gap:16px; flex-wrap:wrap">
-      <a class="btn" href="./quiz.html">Take the mini-quiz</a>
-      <a class="btn" href="./index.html">Back home</a>
-      <a class="btn" href="./audio.html">Audio love notes</a>
+    <nav style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
+      <a class="btn" href="./quiz.html">My letter</a>
+      <a class="btn ghost" href="./index.html">Back Home</a>
+      <a class="btn" href="./audio.html">Audio</a>
     </nav>
   </main>
 
-  <footer>11·10·25 — made with love.</footer>
+  <footer class="small">heart • hold your close</footer>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Link CSV (Google Form Responses → Google Sheet → Publish → CSV)
-      const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSQN4PFm-uNK4cj4ZDjz8K5xxXE6SYGw-sr5lZ0kaAJGHFhd4jcfjuJ_-wBnF96FhbvTThDQz7iZBU/pub?gid=453699801&single=true&output=csv";
-
+      const CSV_URL = "PASTE_YOUR_PUBLISHED_CSV_LINK_HERE"; // ends with output=csv
       const listEl  = document.getElementById('list');
       const loadBtn = document.getElementById('loadMore');
-      const statusEl = document.getElementById('status');
+      const statusEl= document.getElementById('status');
 
-      const PAGE_SIZE = 9;  // số memories hiển thị mỗi lần load
-      let rows = [];
-      let page = 0;
+      const PAGE_SIZE = 9;
+      let rows = [], page = 0;
 
-      // Tạo HTML 1 thẻ polaroid
-      function cardHTML(r, rotDeg){
+      function cardHTML(r,rot){
         const when  = (r["When"] || "").toString().trim();
         const title = (r["Title"] || "").toString().trim();
         const why   = (r["Why is this memorable to u?"] || "").toString().trim();
         const photo = (r["Photo URL"] || "").toString().trim();
-
-        const img = photo && /^https?:\/\//i.test(photo)
-          ? `<img loading="lazy" src="${photo}" alt="">`
-          : "";
-
+        const img   = photo && /^https?:\/\//i.test(photo) ? `<img loading="lazy" src="${photo}" alt="">` : "";
         return `
-          <article class="polaroid" style="--rot:${rotDeg}deg">
+          <article class="polaroid" style="--rot:${rot}deg">
             ${img}
             <div class="caption">
               <div class="title">${title || "(untitled)"}</div>
@@ -73,50 +60,25 @@
           </article>
         `;
       }
-
-      // Render thêm memories
       function renderNext(){
-        const start = page * PAGE_SIZE;
-        const slice = rows.slice(start, start + PAGE_SIZE);
-        if (!slice.length){ loadBtn.style.display = 'none'; return; }
-
-        const html = slice.map(r =>
-          cardHTML(r, (Math.random()*4 - 2).toFixed(2))
-        ).join("");
+        const start = page*PAGE_SIZE, slice = rows.slice(start, start+PAGE_SIZE);
+        if(!slice.length){ loadBtn.style.display='none'; return; }
+        const html = slice.map(r=>cardHTML(r,(Math.random()*4-2).toFixed(2))).join("");
         listEl.insertAdjacentHTML('beforeend', html);
-
-        page++;
-        if (page * PAGE_SIZE >= rows.length) loadBtn.style.display = 'none';
+        page++; if(page*PAGE_SIZE>=rows.length) loadBtn.style.display='none';
       }
-
       loadBtn.addEventListener('click', renderNext);
 
-      // Fetch CSV
-      fetch(CSV_URL, { cache:"no-store" })
-        .then(r => {
-          if (!r.ok) throw new Error("CSV not reachable");
-          return r.text();
+      fetch(CSV_URL,{cache:"no-store"})
+        .then(r=>r.text())
+        .then(text=>{
+          const parsed = Papa.parse(text,{header:true});
+          rows = (parsed.data||[]).filter(r=>r && r["Title"] && r["Title"].trim());
+          rows.sort((a,b)=> new Date(b["Timestamp"]||0) - new Date(a["Timestamp"]||0));
+          if(!rows.length){ statusEl.innerHTML = `<div class="empty">No memories yet 💌</div>`; loadBtn.style.display='none'; return; }
+          renderNext();
         })
-        .then(text => {
-          const parsed = Papa.parse(text, { header: true });
-          rows = (parsed.data || []).filter(r => r && r["Title"] && r["Title"].trim());
-
-          // Sort mới nhất trước
-          rows.sort((a,b) => new Date(b["Timestamp"]||0) - new Date(a["Timestamp"]||0));
-
-          if (!rows.length) {
-            statusEl.innerHTML = `<div class="empty">No memories yet — add one <a href="./add.html">here</a> 💌</div>`;
-            loadBtn.style.display = 'none';
-            return;
-          }
-
-          renderNext(); // load trang đầu tiên
-        })
-        .catch(err => {
-          console.error(err);
-          statusEl.innerHTML = `<div class="error">Could not load memories 😢 — check CSV publish link & headers.</div>`;
-          loadBtn.style.display = 'none';
-        });
+        .catch(err=>{ console.error(err); statusEl.innerHTML = `<div class="error">Could not load memories 😢</div>`; loadBtn.style.display='none'; });
     });
   </script>
 </body>
