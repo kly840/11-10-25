@@ -11,27 +11,20 @@
   <link rel="stylesheet" href="./assets/styles.css"/>
 
   <style>
+    /* hero + spacing để nút gần tiêu đề */
     .hero{
-      min-height:80dvh; 
-      display:flex; 
-      flex-direction:column; 
-      align-items:center; 
-      justify-content:center; 
-      text-align:center; 
-      gap:18px;
+      min-height:80dvh;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; gap:12px;
     }
 
-    /* logo top-left */
-    .logo-top{
-      position:absolute; 
-      top:25px; 
-      left:25px;
-    }
+    /* logo top-left + hover alive */
+    .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
     .logo-top img{
-      height:48px; 
-      width:auto; 
-      opacity:.9;
+      height:48px; width:auto; opacity:.95; transition:transform .12s ease, filter .12s ease;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.08));
     }
+    .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
     /* balloons */
     .balloons{position:relative; height:260px; width:min(900px,100%); margin:8px auto 4px}
@@ -41,38 +34,41 @@
     #b2{left:22%; animation-delay:.40s,.40s}
     #b3{left:42%; animation-delay:.70s,.70s}
     #b4{left:62%; animation-delay:1.00s,1.00s}
-    #b5{left:82%; animation-delay:1.30s,1.30s}
+    #b5{left:78%; animation-delay:1.30s,1.30s}
     @keyframes rise{from{transform:translateY(40px) scale(.98); opacity:0} to{transform:translateY(-10px) scale(1); opacity:1}}
     @keyframes float{0%{transform:translateY(-10px)} 50%{transform:translateY(10px)} 100%{transform:translateY(-10px)}}
 
-    /* button row */
-    .cta-row{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      justify-content:center;
-      margin-top:8px; /* rất gần với title */
+    /* hàng nút giữa */
+    .cta-row{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
+
+    /* ảnh brand lớn ở giữa body (from PDF) */
+    .hero-brand{
+      width:clamp(220px, 28vw, 420px); /* to như bản PDF, vẫn responsive */
+      height:auto; margin:2px auto 2px;
+      filter: drop-shadow(0 10px 22px rgba(0,0,0,.08));
     }
   </style>
 </head>
 <body>
-  <!-- (1) Logo top-left với link -->
-  <a href="./index.html" class="logo-top">
+  <!-- logo top-left + link về home -->
+  <a href="./index.html" class="logo-top" aria-label="Home">
     <img src="./assets/heart_logo.png" alt="logo">
   </a>
 
   <main class="hero">
-    <!-- (2) Title -->
     <h1>happi birthday naan. are you ready? ✨</h1>
 
-    <!-- (3) 3 buttons ngay dưới title -->
+    <!-- ảnh lớn giữa body -->
+    <img src="./assets/heart_logo_text.png" alt="" class="hero-brand">
+
+    <!-- 3 buttons ngay dưới title/brand -->
     <div class="cta-row">
       <a class="btn" href="./timeline.html">Memory</a>
       <a class="btn" href="./audio.html">Audio</a>
       <a class="btn" href="./quiz.html">My letter</a>
     </div>
 
-    <!-- (4) Balloons floating -->
+    <!-- balloons floating n1..n5 -->
     <div class="balloons">
       <div class="balloon text-center" id="b1"><img src="./assets/n1.png" alt=""></div>
       <div class="balloon text-center" id="b2"><img src="./assets/n2.png" alt=""></div>
@@ -82,7 +78,6 @@
     </div>
   </main>
 
-  <!-- footer -->
   <footer class="small" style="text-align:center">from kly ♡</footer>
 </body>
 </html>
