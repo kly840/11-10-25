@@ -9,37 +9,76 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/styles.css"/>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <style>
+    /* logo top-left + hover (y như index) */
+    .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
+    .logo-top img{
+      height:48px; width:auto; opacity:.95;
+      transition:transform .12s ease, filter .12s ease;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.08));
+    }
+    .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
+
+    /* layout để nav dính cuối trang khi nội dung ít */
+    .page{ display:flex; flex-direction:column; min-height:75dvh; }
+
+    /* callout form: đậm + gấp đôi kích thước thường */
+    .callout{
+      font-weight:800;
+      font-size:clamp(18px, 3.2vw, 26px); /* ~gấp đôi base 16px, responsive */
+      margin:8px 0 10px;
+    }
+
+    /* nav cuối trang */
+    .spacer{ flex:1 1 auto; }
+    .bottom-nav{
+      display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
+      margin-top:12px; margin-bottom:4px;
+    }
+  </style>
 </head>
 <body>
+  <!-- 1) Logo -->
+  <a href="./index.html" class="logo-top" aria-label="Home">
+    <img src="./assets/heart_logo.png" alt="logo">
+  </a>
+
   <header>
     <h1>our memories together &gt;&lt;</h1>
-    <p class="small">You can add yours via this form → <a href="PASTE_YOUR_GOOGLE_FORM_LINK" target="_blank" rel="noopener">Here</a></p>
+    <!-- 3) Callout to form: bold + double size -->
+    <p class="callout">
+      You can add yours via this form → 
+      <a href="PASTE_YOUR_GOOGLE_FORM_LINK" target="_blank" rel="noopener">Here</a>
+    </p>
   </header>
 
-  <main>
+  <main class="page">
     <div id="status"></div>
+
+    <!-- gallery -->
     <section id="list" class="gallery" aria-live="polite"></section>
 
-    <div style="text-align:center;margin-top:16px">
-      <button id="loadMore" class="btn">Next Page</button>
-    </div>
+    <!-- spacer đẩy nav xuống đáy khi ít nội dung -->
+    <div class="spacer"></div>
 
-    <nav style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
+    <!-- 4) 3 nút đỏ, căn giữa, sát cuối body -->
+    <nav class="bottom-nav">
+      <a class="btn" href="./index.html">Back Home</a>
       <a class="btn" href="./quiz.html">My letter</a>
-      <a class="btn ghost" href="./index.html">Back Home</a>
       <a class="btn" href="./audio.html">Audio</a>
     </nav>
   </main>
 
-  <footer class="small">heart • hold your close</footer>
+  <!-- 2) Footer -->
+  <footer class="small" style="text-align:center">from kly ♡</footer>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // CSV đã publish (bạn có thể thay link khác nếu cần)
+      // CSV của bạn (đang dùng link đã publish)
       const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSQN4PFm-uNK4cj4ZDjz8K5xxXE6SYGw-sr5lZ0kaAJGHFhd4jcfjuJ_-wBnF96FhbvTThDQz7iZBU/pub?gid=453699801&single=true&output=csv";
 
       const listEl  = document.getElementById('list');
-      const loadBtn = document.getElementById('loadMore');
       const statusEl= document.getElementById('status');
 
       const PAGE_SIZE = 9;
@@ -62,14 +101,14 @@
           </article>
         `;
       }
+
       function renderNext(){
         const start = page*PAGE_SIZE, slice = rows.slice(start, start+PAGE_SIZE);
-        if(!slice.length){ loadBtn.style.display='none'; return; }
+        if(!slice.length) return;
         const html = slice.map(r=>cardHTML(r,(Math.random()*4-2).toFixed(2))).join("");
         listEl.insertAdjacentHTML('beforeend', html);
-        page++; if(page*PAGE_SIZE>=rows.length) loadBtn.style.display='none';
+        page++;
       }
-      loadBtn.addEventListener('click', renderNext);
 
       fetch(CSV_URL,{cache:"no-store"})
         .then(r=>r.text())
@@ -77,10 +116,11 @@
           const parsed = Papa.parse(text,{header:true});
           rows = (parsed.data||[]).filter(r=>r && r["Title"] && r["Title"].trim());
           rows.sort((a,b)=> new Date(b["Timestamp"]||0) - new Date(a["Timestamp"]||0));
-          if(!rows.length){ statusEl.innerHTML = `<div class="empty">No memories yet 💌</div>`; loadBtn.style.display='none'; return; }
-          renderNext();
+          if(!rows.length){ statusEl.innerHTML = `<div class="empty">No memories yet 💌</div>`; return; }
+          // render all (hoặc dùng phân trang nếu muốn)
+          while(page*PAGE_SIZE < rows.length) renderNext();
         })
-        .catch(err=>{ console.error(err); statusEl.innerHTML = `<div class="error">Could not load memories 😢</div>`; loadBtn.style.display='none'; });
+        .catch(err=>{ console.error(err); statusEl.innerHTML = `<div class="error">Could not load memories 😢</div>`; });
     });
   </script>
 </body>
