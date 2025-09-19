@@ -10,67 +10,88 @@
   <link rel="stylesheet" href="./assets/styles.css"/>
 
   <style>
+    /* logo top-left (giống index) */
     .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
-    .logo-top img{ height:48px; width:auto; opacity:.95;
+    .logo-top img{
+      height:48px; width:auto; opacity:.95;
       transition:transform .12s ease, filter .12s ease;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.08));
+    }
     .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
+    /* page layout: để bottom nav xuống cuối khi nội dung ít */
     .page{ display:flex; flex-direction:column; min-height:75dvh; }
+
+    /* lưới 2 cột */
     .quiz-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-top:40px; }
-    .quiz-box{ background:#f5f5e8; padding:20px 28px; border-radius:12px; }
-    .quiz-box label{ display:block; font-weight:700; margin:12px 0 4px; }
-    .quiz-box input{ width:100%; padding:10px 14px; border-radius:8px; border:1px solid #ddd; }
+    @media (max-width:900px){ .quiz-wrap{ grid-template-columns:1fr; } }
 
-    .callout{ font-weight:800; font-size:clamp(18px,3.2vw,26px); margin:12px 0; text-align:center; }
+    /* cột trái: khung câu hỏi */
+    .quiz-box{ background:var(--soft); padding:20px 28px; border-radius:12px; box-shadow:var(--shadow); }
+    .quiz-box label{ display:block; font-weight:700; margin:12px 0 6px; }
+    .quiz-box input{ width:100%; padding:10px 14px; border-radius:12px; border:1px solid rgba(89,2,2,.25); }
 
+    /* dòng “Only opens after the quiz” — đậm + to gấp đôi */
+    .callout{ font-weight:800; font-size:clamp(18px,3.2vw,26px); margin:12px 0; }
+
+    /* nút trắng cho “unlock my letter ^^” */
     .btn-white{
-      background:#fff; color:#ce2800; border:2px solid #ce2800;
-      padding:10px 18px; border-radius:25px; font-weight:700;
-      transition:background .2s,color .2s;
+      background:#fff; color:var(--accent); border:2px solid var(--accent);
+      padding:10px 18px; border-radius:25px; font-weight:700; cursor:pointer;
+      transition:background .2s,color .2s; box-shadow:var(--shadow);
     }
-    .btn-white:hover{ background:#ce2800; color:#fff; }
+    .btn-white:hover{ background:var(--accent); color:#fff; }
 
-    .bottom-nav{ display:flex; justify-content:center; gap:12px; margin-top:20px; }
+    /* bottom nav (đỏ, căn giữa, sát cuối trang) */
+    .spacer{ flex:1 1 auto; }
+    .bottom-nav{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:12px; margin-bottom:4px; }
+
+    /* ảnh bên phải: giữ size gốc theo khung vùng */
+    .right-img{ display:flex; justify-content:center; align-items:center; }
+    .right-img img{ max-width:100%; height:auto; border-radius:16px; box-shadow:var(--shadow); }
   </style>
 </head>
 <body>
-  <!-- Logo -->
-  <a href="./index.html" class="logo-top"><img src="./assets/heart_logo.png" alt="logo"></a>
+  <!-- 1) Logo -->
+  <a href="./index.html" class="logo-top" aria-label="Home"><img src="./assets/heart_logo.png" alt="logo"></a>
 
   <header>
     <h1>Heyyyy! Before you read my letter...</h1>
     <p>you gotta answer a mini-quiz to unlock it 💡</p>
+    <!-- 3) callout to & bold -->
     <p class="callout">Only opens after the quiz</p>
   </header>
 
   <main class="page">
     <section class="quiz-wrap">
-      <!-- Column 1: quiz + unlock -->
+      <!-- 4) Column 1: chỉ giữ nút Unlock (trắng) trong khung -->
       <div class="quiz-box">
-        <label>1) Our first call ended at what time?</label>
-        <input type="text" placeholder="e.g., 02:13 AM">
+        <form id="quiz-form">
+          <label>1) Our first call ended at what time?</label>
+          <input type="text" name="q1" placeholder="e.g., 02:13 AM" required>
 
-        <label>2) Where did we see the broken umbrella?</label>
-        <input type="text" placeholder="place">
+          <label>2) Where did we see the broken umbrella?</label>
+          <input type="text" name="q2" placeholder="place" required>
 
-        <label>3) The safe-word on our first trip?</label>
-        <input type="text" placeholder="word">
+          <label>3) The safe-word on our first trip?</label>
+          <input type="text" name="q3" placeholder="word" required>
 
-        <button class="btn-white" style="margin-top:18px;">unlock my letter ^^</button>
+          <button type="submit" class="btn-white" style="margin-top:16px;">unlock my letter ^^</button>
+          <p id="msg" class="small" style="margin-top:6px;"></p>
+        </form>
       </div>
 
-      <!-- Column 2: image linked -->
-      <div style="display:flex; justify-content:center; align-items:center;">
-        <a href="https://kly840.github.io/11-10-25/letters/letter-1.html" target="_blank">
-          <img src="./assets/hello_nhan_khungf_letter.png" alt="Letter" style="max-width:100%; height:auto;">
+      <!-- 5) Column 2: chỉ ảnh, có link tới letter-1 (giữ nguyên size hiển thị) -->
+      <div class="right-img">
+        <a href="https://kly840.github.io/11-10-25/letters/letter-1.html" target="_blank" rel="noopener">
+          <img src="./assets/hello_nhan_khungf_letter.png" alt="Hello Nhan khungf">
         </a>
       </div>
     </section>
 
-    <div class="spacer" style="flex:1"></div>
+    <div class="spacer"></div>
 
-    <!-- Bottom nav (Back Home – Memory – Audio) -->
+    <!-- 4) Bottom nav: Back Home – My Letter – Audio (đỏ, căn giữa, sát footer) -->
     <nav class="bottom-nav">
       <a class="btn" href="./index.html">Back Home</a>
       <a class="btn" href="./timeline.html">Memory</a>
@@ -78,6 +99,65 @@
     </nav>
   </main>
 
+  <!-- 2) Footer -->
   <footer class="small" style="text-align:center">from kly ♡</footer>
+
+  <!-- JS: kiểm tra đáp án → tạo token → mở thư -->
+  <script>
+    // ==== CONFIG (giữ đúng với letter page) ====
+    const ANSWERS = {
+      q1: ["2:13 am","02:13 am","0213"],
+      q2: ["bus stop","at the bus stop"],
+      q3: ["pineapple"]
+    };
+    const SALT = "kly840";
+    const LETTER_URL = "./letters/letter-1.html";
+
+    // Helpers
+    function normalize(s){
+      return (s||"").toString().trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu,"");
+    }
+    async function sha256Hex(str){
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+    }
+    function isAllCorrect(fd){
+      return Object.keys(ANSWERS).every(k=>{
+        const a = normalize(fd.get(k));
+        return (ANSWERS[k]||[]).some(ok=>normalize(ok)===a);
+      });
+    }
+    async function buildCanonicalToken(){
+      const joined = Object.keys(ANSWERS).map(k=>normalize(ANSWERS[k][0])).join("|") + "|" + SALT;
+      return sha256Hex(joined);
+    }
+
+    // (optional) nhỏ: confetti vui vui
+    function confetti(){ for(let i=0;i<70;i++){ const s=document.createElement('span'); s.className='confetti';
+      s.style.left=Math.random()*100+'vw'; s.style.background=`hsl(${Math.random()*360}deg 90% 60%)`;
+      s.style.animationDuration=(1.1+Math.random()*0.9)+'s'; s.style.width=(6+Math.random()*6)+'px'; s.style.height=(10+Math.random()*10)+'px';
+      document.body.appendChild(s); setTimeout(()=>s.remove(), 1800);
+    }}
+
+    const form = document.getElementById('quiz-form');
+    const msg  = document.getElementById('msg');
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const data = new FormData(form);
+
+      if(!isAllCorrect(data)){
+        msg.textContent = "Hmm not yet — try again 😉";
+        return;
+      }
+      msg.textContent = "Correct! Unlocking letter… 💖";
+      confetti();
+
+      const token = await buildCanonicalToken();
+      const url = new URL(LETTER_URL, location.href);
+      url.searchParams.set("t", token);
+      setTimeout(()=>{ location.href = url.toString(); }, 800);
+    });
+  </script>
 </body>
 </html>
