@@ -1,49 +1,41 @@
-<!doctype html>
-<html lang="vi">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="robots" content="noindex"/>
-  <link rel="stylesheet" href="./assets/styles.css"/>
-  <title>Our Timeline</title>
-  <!-- PapaParse to read CSV easily -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const CSV_URL = "PASTE_YOUR_PUBLISHED_CSV_LINK_HERE"; // ends with output=csv
-      const listEl = document.getElementById('list');
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSQN4PFm-uNK4cj4ZDjz8K5xxXE6SYGw-sr5lZ0kaAJGHFhd4jcfjuJ_-wBnF96FhbvTThDQz7iZBU/pub?gid=453699801&single=true&output=csv"; // ends with output=csv
+    const listEl = document.getElementById('list');
 
-      fetch(CSV_URL)
-        .then(r => r.text())
-        .then(text => {
-          const parsed = Papa.parse(text, { header: true, dynamicTyping: true });
-          let rows = parsed.data.filter(r => r.Date && r.Title);
-          // sort newest → oldest
-          rows.sort((a,b) => new Date(b.Date) - new Date(a.Date));
-          listEl.innerHTML = rows.map(r => `
+    fetch(CSV_URL)
+      .then(r => r.text())
+      .then(text => {
+        const parsed = Papa.parse(text, { header: true });
+        let rows = parsed.data.filter(r => r["Title"] && r["Title"].trim());
+
+        // Sort by Google Form "Timestamp" (newest first)
+        rows.sort((a, b) => {
+          const ta = new Date(a["Timestamp"] || 0);
+          const tb = new Date(b["Timestamp"] || 0);
+          return tb - ta;
+        });
+
+        listEl.innerHTML = rows.map(r => {
+          const when = (r["When"] || "").trim();
+          const title = (r["Title"] || "").trim();
+          const why = (r["Why is this memorable to u?"] || "").trim();
+          const photo = (r["Photo URL"] || "").trim();
+          return `
             <article class="card">
-              <div class="small">${r.Date}</div>
-              <h3>${r.Title}</h3>
-              ${r['Photo URL'] ? `<img alt="" src="${r['Photo URL']}">` : ``}
-              <p>${r.Caption || ""}</p>
-              ${r['Audio URL'] ? `<audio controls src="${r['Audio URL']}"></audio>` : ``}
+              ${when ? `<div class="small">When: ${when}</div>` : ``}
+              <h3>${title}</h3>
+              ${photo ? `<img alt="" src="${photo}">` : ``}
+              ${why ? `<p>${why}</p>` : ``}
             </article>
-          `).join("");
-        })
-        .catch(err => { listEl.innerHTML = `<p>Could not load memories 😢</p>`; console.error(err); });
-    });
-  </script>
-</head>
-<body class="wrap">
-  <main style="max-width:960px;width:100%">
-    <h1>Our memories</h1>
-    <p class="small">Add yours via the form → <a href="./add.html">here</a>.</p>
-    <section id="list" class="grid mem" aria-live="polite"></section>
-    <nav class="mini">
-      <a href="./quiz.html">Take the mini-quiz → unlock letters</a>
-      <a href="./index.html">Back home</a>
-    </nav>
-  </main>
-</body>
-</html>
+          `;
+        }).join("");
 
+        if (!rows.length) listEl.innerHTML = `<p>No memories yet — add one <a href="./add.html">here</a> 💌</p>`;
+      })
+      .catch(err => {
+        console.error(err);
+        listEl.innerHTML = `<p>Could not load memories 😢</p>`;
+      });
+  });
+</script>
