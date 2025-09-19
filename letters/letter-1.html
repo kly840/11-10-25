@@ -1,65 +1,62 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="robots" content="noindex" />
-  <title>Letter — 11·10·25</title>
-  <link rel="stylesheet" href="../assets/styles.css" />
-  <style>
-    .lock{background:#201f2a;border:1px dashed #3b3a46;border-radius:14px;padding:14px;margin-top:12px}
-    .letter{background:#fff;color:#222;border-radius:16px;padding:18px}
-  </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/>
+  <title>My Letter for You</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css"/>
 </head>
 <body>
   <header>
     <h1>Your Letter ✉️</h1>
-    <p class="small">Only opens after the quiz 💡</p>
+    <p class="small">Only opens after the quiz</p>
   </header>
 
-  <main style="max-width:720px">
-    <div id="locked" class="lock">
-      <p>Locked 🔒 — Please solve the <a href="../quiz.html">mini-quiz</a> first.</p>
-    </div>
+  <main style="max-width:760px">
+    <!-- Locked state -->
+    <div id="locked" class="empty">Locked 🔒 — Please solve the <a href="../quiz.html">mini-quiz</a> first.</div>
 
+    <!-- Content -->
     <article id="content" class="letter" style="display:none">
-      <h2>For you 💌</h2>
-      <p>… your letter content here …</p>
-      <p>… add more heartfelt text …</p>
-      <p class="small"><a href="../quiz.html">Back to quiz</a></p>
+      <img src="../assets/heart_logo.png" alt="" style="height:44px; opacity:.9">
+      <p class="small" style="margin:8px 0 12px">November 11, 2025</p>
+
+      <h2>my letter for u</h2>
+      <p>Hello Nhan khungf,</p>
+      <p>Dear Naan,</p>
+      <p>abc xyz … (viết nội dung thư ở đây)</p>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0">
+        <img src="../assets/hello_nhan_khungf_stamp.png" alt="" style="height:48px">
+        <img src="../assets/red_heart.png" alt="" style="height:32px">
+        <img src="../assets/mini_heart.png" alt="" style="height:22px">
+        <img src="../assets/mini_heart_rev.png" alt="" style="height:22px">
+        <img src="../assets/letter_for_you.png" alt="" style="height:44px">
+      </div>
+
+      <p class="small" style="margin-top:16px">
+        <a class="btn ghost" href="../timeline.html">Memmory</a>
+        <a class="btn ghost" href="../index.html">Back Home</a>
+        <a class="btn ghost" href="../audio.html">Audio</a>
+      </p>
     </article>
   </main>
 
   <script>
-    // ==== CONFIG ====
-    const ANSWERS = {
-      q1: ["2:13 am","02:13 am","0213"],
-      q2: ["bus stop","at the bus stop"],
-      q3: ["pineapple"]
-    };
+    const ANSWERS = { q1:["2:13 am","02:13 am","0213"], q2:["bus stop","at the bus stop"], q3:["pineapple"] };
     const SALT = "kly840";
+    function normalize(s){ return (s||"").toString().trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu,""); }
+    async function sha256Hex(str){ const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join(""); }
+    async function expectedToken(){ const joined=Object.keys(ANSWERS).map(k=>normalize(ANSWERS[k][0])).join("|")+"|"+SALT; return sha256Hex(joined); }
 
-    function normalize(s){
-      return (s||"").toString().trim().toLowerCase()
-        .replace(/[^\p{L}\p{N}]+/gu,"");
-    }
-    async function sha256Hex(str){
-      const enc = new TextEncoder().encode(str);
-      const buf = await crypto.subtle.digest("SHA-256", enc);
-      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-    }
-    async function expectedToken(){
-      const keyOrder = Object.keys(ANSWERS);
-      const joined = keyOrder.map(k => normalize(ANSWERS[k][0])).join("|") + "|" + SALT;
-      return sha256Hex(joined);
-    }
-
-    (async ()=>{
-      const params = new URLSearchParams(location.search);
-      const t = params.get("t") || "";
+    (async()=>{
+      const t=new URLSearchParams(location.search).get("t")||"";
       const ok = t && t === await expectedToken();
-      document.getElementById('locked').style.display  = ok ? "none"  : "block";
-      document.getElementById('content').style.display = ok ? "block" : "none";
+      document.getElementById('locked').style.display = ok ? "none":"block";
+      document.getElementById('content').style.display = ok ? "block":"none";
     })();
   </script>
 </body>
