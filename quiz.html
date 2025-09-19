@@ -1,59 +1,110 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="robots" content="noindex"/><link rel="stylesheet" href="./assets/styles.css"/>
-  <title>Mini-quiz</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Mini-quiz — 11·10·25</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <style>
+    .field{margin:10px 0}
+    .lock{background:#201f2a;border:1px dashed #3b3a46;border-radius:14px;padding:14px;margin-top:12px}
+    input,button{padding:8px 10px;border-radius:6px;border:1px solid #333;background:#14141a;color:#fff;width:100%}
+    button{cursor:pointer;border:0;background:#111}
+    button:hover{background:#333}
+    label{font-size:14px;color:#aab1c6}
+  </style>
 </head>
-<body class="wrap">
-  <main style="max-width:720px;margin:0 auto">
+<body>
+  <header>
     <h1>Mini-quiz 🎯</h1>
-    <form id="quiz" class="card">
-      <p><strong>1)</strong> Our first call ended at what time?</p>
-      <input name="q1" placeholder="e.g., 02:13 AM" required />
-      <p><strong>2)</strong> Where did we see the broken umbrella?</p>
-      <input name="q2" placeholder="place" required />
-      <p><strong>3)</strong> The safe-word on our first trip?</p>
-      <input name="q3" placeholder="word" required />
-      <button class="btn" type="submit">Check</button>
+    <p class="small">Trả lời đúng để mở thư bí mật.</p>
+  </header>
+
+  <main style="max-width:720px">
+    <form id="quiz" class="lock">
+      <div class="field">
+        <label><strong>1)</strong> Our first call ended at what time?</label>
+        <input name="q1" placeholder="e.g., 02:13 AM" required />
+      </div>
+      <div class="field">
+        <label><strong>2)</strong> Where did we see the broken umbrella?</label>
+        <input name="q2" placeholder="place" required />
+      </div>
+      <div class="field">
+        <label><strong>3)</strong> The safe-word on our first trip?</label>
+        <input name="q3" placeholder="word" required />
+      </div>
+      <button type="submit" class="btn" style="width:auto">Check</button>
       <p id="msg" class="small"></p>
     </form>
 
-    <section id="letters" class="hidden">
-      <h2>Unlocked Letters ✉️</h2>
-      <div class="grid">
-        <a class="btn" href="./letters/letter-1.html">Letter 1</a>
-        <a class="btn" href="./letters/letter-2.html">Letter 2</a>
-      </div>
-    </section>
-    <p class="mini"><a href="./index.html">Home</a></p>
+    <nav class="mini" style="margin-top:16px;display:flex;gap:16px;flex-wrap:wrap">
+      <a class="btn" href="./timeline.html">Back to timeline</a>
+      <a class="btn" href="./index.html">Home</a>
+    </nav>
   </main>
 
   <script>
+    // ==== CONFIG (chỉnh tại đây) ====
+    // Các đáp án đúng (cho phép nhiều biến thể). Viết thường không dấu/định dạng khi so sánh.
     const ANSWERS = {
-      q1: ["2:13 am","02:13 am","02:13"], // multiple accepted
-      q2: ["bus stop"],
-      q3: ["pineapple"]
+      q1: ["2:13 am","02:13 am","0213"],     // ví dụ
+      q2: ["bus stop","at the bus stop"],    // ví dụ
+      q3: ["pineapple"]                      // ví dụ
     };
+    // Muối bí mật (salt): đổi chuỗi này thành cái chỉ bạn biết
+    const SALT = "change_this_to_your_secret_salt_11-10-25";
+    // Đường dẫn thư
+    const LETTER_URL = "./letters/letter-1.html";
+
+    // Chuẩn hoá input để so sánh (lowercase, bỏ dấu câu/spaces cơ bản)
+    function normalize(s){
+      return (s||"").toString().trim().toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu,"") // bỏ khoảng trắng & ký tự lạ
+    }
+
+    // Kiểm tra đúng hết
+    function isAllCorrect(formData){
+      return Object.keys(ANSWERS).every(k => {
+        const a = normalize(formData.get(k));
+        return (ANSWERS[k]||[]).some(ok => normalize(ok) === a);
+      });
+    }
+
+    // Tạo token SHA-256 (Web Crypto API)
+    async function sha256Hex(str){
+      const enc = new TextEncoder().encode(str);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+    }
+
+    // Tạo token từ đáp án đúng + SALT
+    async function buildToken(formData){
+      // Ghép chuỗi theo thứ tự key để nhất quán
+      const keyOrder = Object.keys(ANSWERS);
+      const joined = keyOrder.map(k => normalize(formData.get(k))).join("|") + "|" + SALT;
+      return sha256Hex(joined);
+    }
 
     const form = document.getElementById('quiz');
     const msg  = document.getElementById('msg');
-    const gate = document.getElementById('letters');
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
-      const ok = [...data.entries()].every(([k,v]) => {
-        const a = (v||"").toString().trim().toLowerCase();
-        return (ANSWERS[k]||[]).some(x => x === a);
-      });
-      if (ok) {
-        msg.textContent = "Correct! Letters unlocked 💖";
-        gate.classList.remove('hidden');
-        form.querySelector('button').disabled = true;
-      } else {
+
+      if (!isAllCorrect(data)) {
         msg.textContent = "Hmm not yet — try again 😉";
+        return;
       }
+      msg.textContent = "Correct! Unlocking letter… 💖";
+
+      // tạo token & chuyển sang trang thư kèm ?t=TOKEN
+      const token = await buildToken(data);
+      const url = new URL(LETTER_URL, location.href);
+      url.searchParams.set("t", token);
+      location.href = url.toString();
     });
   </script>
 </body>
