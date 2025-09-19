@@ -1,107 +1,79 @@
-/* === Reset & base === */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
-body {
-  background: radial-gradient(60% 60% at 50% 35%, #1b1e29, #0e0f13);
-  color: #f6f7fb;
-  font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-  -webkit-font-smoothing: antialiased;
+/* === Theme variables === */
+:root{
+  --bg:#fff5e7;         /* page background */
+  --paper:#fff;         /* cards/polaroid paper */
+  --text:#590202;       /* primary text */
+  --muted:#7c3d2f;      /* secondary text */
+  --accent:#ce2800;     /* buttons, titles, highlights */
+  --soft:#ece8d5;       /* soft surfaces (quiz box) */
+  --shadow:0 8px 24px rgba(0,0,0,.12);
 }
 
-/* Links */
-a { color: #77b7ff; text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-/* Headings */
-h1, h2, h3 { font-weight: 700; line-height: 1.3; }
-h1 { font-size: 32px; margin-bottom: 12px; }
-h2 { font-size: 24px; margin-bottom: 8px; }
-h3 { font-size: 18px; }
-
-/* Text */
-.small { color: #aab1c6; font-size: 13px; }
-p { margin: 6px 0; }
-
-/* Layout containers */
-header, main, footer {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 16px;
+*{box-sizing:border-box} html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.6 "Montserrat", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  -webkit-font-smoothing:antialiased;
 }
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;display:block}
 
-/* === Timeline Gallery (polaroid style) === */
-.gallery {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  align-items: start;
-}
+/* Containers */
+header,main,footer{max-width:1000px;margin:0 auto;padding:0 16px}
+h1,h2,h3{line-height:1.25;margin:0 0 8px}
+h1{font-size:40px;color:var(--accent)}
+h2{font-size:28px}
+h3{font-size:18px}
+.small{font-size:13px;color:var(--muted)}
+p{margin:8px 0}
 
-/* Polaroid card */
-.polaroid {
-  background: #fff;
-  color: #222;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.25);
-  padding: 10px 10px 14px;
-  transform: rotate(var(--rot,0deg));
-  transition: transform .2s ease, box-shadow .2s ease;
+/* Buttons (rounded by 25) */
+.btn{
+  display:inline-block; background:var(--accent); color:#fff; border:0;
+  padding:10px 18px; border-radius:25px; font-weight:700; cursor:pointer;
+  box-shadow:var(--shadow); transition:transform .12s ease, box-shadow .12s ease;
 }
-.polaroid:hover {
-  transform: rotate(var(--rot,0deg)) translateY(-3px);
-  box-shadow: 0 14px 30px rgba(0,0,0,.35);
-}
+.btn:hover{transform:translateY(-1px); box-shadow:0 10px 28px rgba(0,0,0,.16)}
+.btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
 
-.polaroid img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 6px;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
+/* Hero balloons */
+.hero{min-height:70dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:16px}
+.balloons{position:relative; height:280px; width:min(900px,100%); margin-top:8px}
+.balloon{position:absolute; bottom:-60px; opacity:0; animation:rise 6s ease-in forwards, float 3.5s ease-in-out 6s infinite}
+.balloon img{width:160px; height:auto; border-radius:12px; box-shadow:var(--shadow)}
+@keyframes rise{from{transform:translateY(40px) scale(.98); opacity:0} to{transform:translateY(-10px) scale(1); opacity:1}}
+@keyframes float{0%{transform:translateY(-10px)} 50%{transform:translateY(10px)} 100%{transform:translateY(-10px)}}
 
-.caption { margin-top: 10px; }
-.caption .title { font-weight: 700; }
-.caption .when { color: #666; font-size: 12px; margin-top: 2px; }
-
-/* Polaroid shadow “kệ ảnh” */
-.polaroid::after {
-  content: "";
-  display: block;
-  height: 6px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(0,0,0,.10), rgba(0,0,0,.18), rgba(0,0,0,.10));
-  filter: blur(2px);
-  opacity: .7;
-  margin-top: 8px;
+/* Polaroid gallery (timeline) */
+.gallery{display:grid; gap:18px; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); align-items:start}
+.polaroid{
+  background:var(--paper); color:var(--text); border-radius:10px; padding:10px 10px 14px;
+  box-shadow:var(--shadow); transform:rotate(var(--rot,0deg));
+  transition:transform .15s ease, box-shadow .15s ease;
 }
+.polaroid:hover{transform:rotate(var(--rot,0deg)) translateY(-3px); box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.polaroid img{width:100%; border-radius:8px; aspect-ratio:4/3; object-fit:cover}
+.caption{margin-top:10px}
+.caption .title{font-weight:800}
+.caption .when{color:var(--muted); font-size:12px; margin-top:2px}
 
-/* === Buttons === */
-.btn {
-  background: #111;
-  color: #fff;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-.btn:hover { background: #333; }
+/* Messages */
+.empty,.error{background:var(--soft); border:1px dashed rgba(89,2,2,.25); border-radius:14px; padding:14px; margin:16px 0}
 
-/* === Messages & Errors === */
-.empty, .error {
-  background: #201f2a;
-  border: 1px dashed #3b3a46;
-  border-radius: 14px;
-  padding: 14px;
-  margin: 20px 0;
-  text-align: center;
-}
+/* Two-column (quiz) */
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start}
+@media (max-width:850px){ .two-col{grid-template-columns:1fr} }
 
-/* === Footer === */
-footer {
-  font-size: 13px;
-  color: #aab1c6;
-  margin: 24px auto;
-}
+/* Quiz box */
+.quizbox{background:var(--soft); border-radius:16px; padding:16px; box-shadow:var(--shadow)}
+.quizbox label{font-size:14px; color:var(--muted)}
+input[type="text"]{width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(89,2,2,.25); background:#fff; color:var(--text)}
+
+/* Letter card */
+.letter{background:var(--paper); color:var(--text); border-radius:18px; padding:20px; box-shadow:var(--shadow)}
+
+/* Footer */
+footer{margin:24px auto 40px}
