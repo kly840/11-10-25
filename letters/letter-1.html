@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../assets/styles.css"/>
 
   <style>
-    /* logo top-left (y như index) */
+    /* logo top-left (giống index) */
     .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
     .logo-top img{
       height:48px; width:auto; opacity:.95;
@@ -19,81 +19,85 @@
     }
     .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
-    /* bố cục để bottom nav luôn sát cuối khi nội dung ít */
+    /* trang: để nav dính đáy khi nội dung ít */
     .page{ display:flex; flex-direction:column; min-height:75dvh; }
+
+    /* vùng trung tâm gồm 3 cột: trái (ảnh) – giữa (thư) – phải (ảnh) */
+    .stage{
+      display:grid; grid-template-columns: 160px minmax(300px, 720px) 160px; gap:16px;
+      align-items:start; justify-content:center; margin-top:10px;
+    }
+    @media (max-width:980px){
+      .stage{ grid-template-columns: 1fr; }
+      .side-left,.side-right{ justify-content:center; }
+    }
+
+    /* khung thư trắng ở giữa */
+    .letter-card{ background:var(--paper); color:var(--text); border-radius:18px; padding:20px; box-shadow:var(--shadow); }
+
+    /* cột ảnh trái/phải (ảnh nằm ngoài card) */
+    .side-left, .side-right{ display:flex; flex-direction:column; gap:14px; }
+    .side-left img, .side-right img{
+      width: clamp(42px, 6vw, 72px); height:auto; object-fit:contain;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.12));
+    }
+    /* nhấn ảnh chính một chút lớn hơn */
+    .side-left img.big, .side-right img.big{ width: clamp(62px, 8vw, 100px); }
+
+    /* bottom nav giống timeline */
     .spacer{ flex:1 1 auto; }
-
-    /* khối giữa: 3 cột (stickers trái – letter – stickers phải) */
-    .wrap{
-      display:grid; grid-template-columns:100px 1fr 100px; gap:16px; align-items:start;
-      margin-top:10px;
-    }
-    @media (max-width:900px){
-      .wrap{ grid-template-columns:1fr; }
-      .stickers{ display:flex; gap:10px; justify-content:center; }
-    }
-
-    .stickers{ position:relative; }
-    .stickers img{ display:block; margin:10px auto; }
-
-    /* thẻ thư trắng ở giữa */
-    .letter{ background:var(--paper); color:var(--text); border-radius:18px; padding:22px; box-shadow:var(--shadow); }
-
-    /* bottom nav (đỏ, căn giữa, ngay trên footer) */
     .bottom-nav{
       display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
-      margin-top:12px; margin-bottom:4px;
+      margin-top:16px; margin-bottom:4px;
     }
-
-    /* dòng phụ trên đầu */
-    .sub{ margin-top:4px; margin-bottom:6px; color:var(--muted) }
   </style>
 </head>
 <body>
   <!-- 1) Logo -->
-  <a href="../index.html" class="logo-top" aria-label="Home"><img src="../assets/heart_logo.png" alt="logo"></a>
+  <a href="../index.html" class="logo-top" aria-label="Home">
+    <img src="../assets/heart_logo.png" alt="logo">
+  </a>
 
   <header>
     <h1>Your Letter ✉️</h1>
-    <p class="small sub">Only opens after the quiz</p>
+    <p class="small">Only opens after the quiz</p>
   </header>
 
   <main class="page">
-    <!-- Khóa nếu chưa có token -->
-    <div id="locked" class="empty" style="max-width:760px; margin:0 auto">
-      Locked 🔒 — Please solve the <a href="../quiz.html">mini-quiz</a> first.
-    </div>
+    <!-- Locked state (giữ nguyên) -->
+    <div id="locked" class="empty">Locked 🔒 — Please solve the <a href="../quiz.html">mini-quiz</a> first.</div>
 
-    <!-- 3 cột: stickers trái | letter | stickers phải -->
-    <section id="gate" style="display:none">
-      <div class="wrap">
-        <!-- 3) Stickers bên trái (ngoài khung thư) -->
-        <aside class="stickers" aria-hidden="true">
-          <img src="../assets/hello_nhan_khungf_stamp.png" alt="" class="img-48">
-          <img src="../assets/mini_heart.png" alt="" class="img-22">
-        </aside>
+    <!-- 3 cột: trái (ảnh) – giữa (thư) – phải (ảnh) -->
+    <section id="stage" class="stage" style="display:none">
+      <!-- 3) Ảnh bên trái (ngoài khung thư) -->
+      <aside class="side-left">
+        <img src="../assets/hello_nhan_khungf_stamp.png" alt="" class="big">
+        <img src="../assets/mini_heart.png" alt="">
+      </aside>
 
-        <!-- Thư trắng ở giữa -->
-        <article class="letter" id="content">
-          <p class="small" style="margin:0 0 10px">November 11, 2025</p>
-          <h2>my letter for u</h2>
-          <p>Hello Nhan khungf,</p>
-          <p>Dear Naan,</p>
-          <p>abc xyz … (viết nội dung thư ở đây)</p>
-          <p>Yours,<br/>Kylie</p>
-        </article>
+      <!-- Khung thư trắng ở giữa -->
+      <article class="letter-card">
+        <img src="../assets/heart_logo.png" alt="" class="img-44" style="opacity:.9">
+        <p class="small" style="margin:8px 0 12px">November 11, 2025</p>
 
-        <!-- 3) Stickers bên phải (ngoài khung thư) -->
-        <aside class="stickers" aria-hidden="true">
-          <img src="../assets/red_heart.png" alt="" class="img-32">
-          <img src="../assets/mini_heart_rev.png" alt="" class="img-22">
-        </aside>
-      </div>
+        <h2>my letter for u</h2>
+        <p>Hello Nhan khungf,</p>
+        <p>Dear Naan,</p>
+        <p>abc xyz … (viết nội dung thư ở đây)</p>
+
+        <p style="margin-top:18px">Yours,<br/>Kylie</p>
+      </article>
+
+      <!-- 3) Ảnh bên phải (ngoài khung thư) -->
+      <aside class="side-right">
+        <img src="../assets/red_heart.png" alt="" class="big">
+        <img src="../assets/mini_heart.png" alt="">
+      </aside>
     </section>
 
     <div class="spacer"></div>
 
-    <!-- 4) 3 nút đỏ, căn giữa, ngay trên footer -->
+    <!-- 4) Nút đỏ, căn giữa, sát đáy -->
     <nav class="bottom-nav">
       <a class="btn" href="../index.html">Back Home</a>
       <a class="btn" href="../timeline.html">Memory</a>
@@ -104,26 +108,21 @@
   <!-- 2) Footer -->
   <footer class="small" style="text-align:center">from kly ♡</footer>
 
-  <!-- Gate logic: so khớp token -->
+  <!-- JS: kiểm tra token (giữ như trước) -->
   <script>
     const ANSWERS = { q1:["2:13 am","02:13 am","0213"], q2:["bus stop","at the bus stop"], q3:["pineapple"] };
     const SALT = "kly840";
-
     function normalize(s){ return (s||"").toString().trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu,""); }
-    async function sha256Hex(str){
-      const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-    }
-    async function expectedToken(){
-      const joined=Object.keys(ANSWERS).map(k=>normalize(ANSWERS[k][0])).join("|")+"|"+SALT;
-      return sha256Hex(joined);
-    }
+    async function sha256Hex(str){ const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join(""); }
+    async function expectedToken(){ const joined=Object.keys(ANSWERS).map(k=>normalize(ANSWERS[k][0])).join("|")+"|"+SALT; return sha256Hex(joined); }
 
     (async()=>{
-      const t=new URLSearchParams(location.search).get("t")||"";
+      const t = new URLSearchParams(location.search).get("t") || "";
       const ok = t && t === await expectedToken();
-      document.getElementById('locked').style.display = ok ? "none":"block";
-      document.getElementById('gate').style.display   = ok ? "block":"none";
+
+      // locked vs stage
+      document.getElementById('locked').style.display = ok ? "none" : "block";
+      document.getElementById('stage').style.display  = ok ? "grid" : "none";
     })();
   </script>
 </body>
