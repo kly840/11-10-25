@@ -38,15 +38,16 @@
       </form>
     </section>
 
-    <!-- Col 2: Image -->
+    <!-- Col 2: Image (img-ref from brief) -->
     <aside>
-      <img src="./assets/hello_nhan_khungf_letter.png" alt="" style="border-radius:16px; box-shadow:var(--shadow)">
+      <img src="./assets/hello_nhan_khungf_letter.png" alt="" style="border-radius:16px; box-shadow:var(--shadow); width:100%; object-fit:cover">
     </aside>
   </main>
 
   <footer class="small">heart • hold your close</footer>
 
   <script>
+    // Answers + salt (same as letter page)
     const ANSWERS = { q1:["2:13 am","02:13 am","0213"], q2:["bus stop","at the bus stop"], q3:["pineapple"] };
     const SALT = "kly840";
     const LETTER_URL = "./letters/letter-1.html";
@@ -56,15 +57,23 @@
     function isAllCorrect(fd){ return Object.keys(ANSWERS).every(k=>{const a=normalize(fd.get(k)); return (ANSWERS[k]||[]).some(ok=>normalize(ok)===a);}); }
     async function buildCanonicalToken(){ const joined=Object.keys(ANSWERS).map(k=>normalize(ANSWERS[k][0])).join("|")+"|"+SALT; return sha256Hex(joined); }
 
+    // tiny confetti
+    function confetti(){ for(let i=0;i<80;i++){ const s=document.createElement('span'); s.className='confetti';
+      s.style.left=Math.random()*100+'vw'; s.style.background=`hsl(${Math.random()*360}deg 90% 60%)`;
+      s.style.animationDuration=(1.2+Math.random()*0.9)+'s'; s.style.width=(6+Math.random()*6)+'px'; s.style.height=(10+Math.random()*10)+'px';
+      document.body.appendChild(s); setTimeout(()=>s.remove(), 2000);
+    }}
+
     const form=document.getElementById('quiz'), msg=document.getElementById('msg');
     form.addEventListener('submit', async e=>{
       e.preventDefault();
       const data=new FormData(form);
       if(!isAllCorrect(data)){ msg.textContent="Hmm not yet — try again 😉"; return; }
       msg.textContent="Correct! Unlocking letter… 💖";
+      confetti();
       const token=await buildCanonicalToken();
       const url=new URL(LETTER_URL, location.href); url.searchParams.set("t", token);
-      location.href = url.toString();
+      setTimeout(()=>{ location.href = url.toString(); }, 900);
     });
   </script>
 </body>
