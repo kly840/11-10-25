@@ -36,14 +36,14 @@
     /* ảnh brand lớn (giữa H1/Buttons và Balloons) */
     .hero-brand{
       width:clamp(220px, 28vw, 420px);
-      height:auto; margin:4px auto 2px;
+      height:auto; margin:0px auto;
       filter: drop-shadow(0 10px 22px rgba(0,0,0,.08));
     }
 
     /* balloons ngay dưới brand, khoảng cách ngắn */
     .balloons{
       position:relative; height:240px; width:min(900px,100%);
-      margin:6px auto 4px;
+      margin:0px auto;
     }
     .balloon{position:absolute; bottom:-60px; opacity:0;
       animation:rise 6s ease-in forwards, float 3.5s ease-in-out 6s infinite}
@@ -54,7 +54,7 @@
     #b2{left:22%; animation-delay:.40s,.40s}
     #b3{left:42%; animation-delay:.70s,.70s}
     #b4{left:62%; animation-delay:1.00s,1.00s}
-    #b5{left:78%; animation-delay:1.30s,1.30s}
+    #b5{left:82%; animation-delay:1.30s,1.30s}
 
     /* fallback keyframes nếu file css ngoài không có */
     @keyframes rise{from{transform:translateY(36px) scale(.98); opacity:0} to{transform:translateY(-8px) scale(1); opacity:1}}
