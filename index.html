@@ -11,11 +11,19 @@
   <link rel="stylesheet" href="./assets/styles.css"/>
 
   <style>
-    /* bố cục chặt chẽ */
+    /* ===== Tuning khoảng cách ===== */
+    :root{
+      /* kéo cả block balloons lên gần brand (giá trị âm => đi lên) */
+      --balloon-shift: -64px;
+    }
+    @media (max-width: 900px){
+      :root{ --balloon-shift: -40px; }
+    }
+
     .hero{
       min-height:80dvh;
       display:flex; flex-direction:column; align-items:center; justify-content:center;
-      text-align:center; gap:6px; /* rất sát nhau */
+      text-align:center; gap:6px; /* các phần sát nhau */
     }
 
     /* logo top-left + hover alive */
@@ -28,28 +36,36 @@
     .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
     /* đẩy H1 xuống một chút */
-    h1{ margin-top:28px; }
+    h1{ margin-top:30px; }
 
-    /* hàng nút sát H1 */
-    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:4px; }
+    /* 3 nút đỏ sát H1 */
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:6px; }
 
-    /* ảnh brand lớn: gần như dính vào balloons */
+    /* cụm brand + balloons */
+    .brand-and-balloons{ display:flex; flex-direction:column; align-items:center; gap:0; }
+
+    /* ảnh brand lớn: gần như dính balloons */
     .hero-brand{
-      width:clamp(220px, 28vw, 420px);
-      height:auto; margin:6px auto 0;      /* ↓ giảm bottom-gap của brand */
+      width:clamp(240px, 30vw, 460px);
+      height:auto; margin:6px auto 0;
       filter: drop-shadow(0 10px 22px rgba(0,0,0,.08));
     }
 
-    /* balloons: kéo lên gần brand */
+    /* balloons: kéo lên bằng transform để khít brand */
     .balloons{
-      position:relative; height:240px; width:min(900px,100%);
-      margin: -2px auto 4px;               /* ↑ margin-top âm nhẹ để áp sát brand */
+      position:relative;
+      height:230px; width:min(900px,100%);
+      margin:0 auto 4px;
+      transform: translateY(var(--balloon-shift));
     }
-    .balloon{position:absolute; bottom:-60px; opacity:0;
-      animation:rise 6s ease-in forwards, float 3.5s ease-in-out 6s infinite}
+    .balloon{
+      position:absolute; bottom:-28px; /* nhỏ hơn trước -> bay cao hơn */
+      opacity:0;
+      animation:rise 6s ease-in forwards, float 3.5s ease-in-out 6s infinite;
+    }
     .balloon img{width:150px; height:auto; border-radius:12px; box-shadow:var(--shadow)}
 
-    /* vị trí & delay khác nhau */
+    /* vị trí & delay */
     #b1{left:2%;  animation-delay:.10s,.10s}
     #b2{left:22%; animation-delay:.40s,.40s}
     #b3{left:42%; animation-delay:.70s,.70s}
@@ -68,27 +84,30 @@
   </a>
 
   <main class="hero">
-    <!-- (2) H1 được đẩy xuống một chút -->
+    <!-- H1 -->
     <h1>happi birthday naan. are you ready? ✨</h1>
 
-    <!-- 3 nút đỏ ngay dưới H1 -->
+    <!-- 3 nút đỏ -->
     <div class="cta-row">
       <a class="btn" href="./timeline.html">Memory</a>
       <a class="btn" href="./audio.html">Audio</a>
       <a class="btn" href="./quiz.html">My letter</a>
     </div>
 
-    <!-- Ảnh brand lớn -->
-    <img src="./assets/heart_logo_text.png" alt="" class="hero-brand">
+    <!-- Cụm brand + balloons để áp sát nhau -->
+    <section class="brand-and-balloons">
+      <!-- Ảnh brand lớn -->
+      <img src="./assets/heart_logo_text.png" alt="" class="hero-brand">
 
-    <!-- Balloons n1..n5 – đã kéo lên gần brand -->
-    <div class="balloons">
-      <div class="balloon text-center" id="b1"><img src="./assets/n1.png" alt=""></div>
-      <div class="balloon text-center" id="b2"><img src="./assets/n2.png" alt=""></div>
-      <div class="balloon text-center" id="b3"><img src="./assets/n3.png" alt=""></div>
-      <div class="balloon text-center" id="b4"><img src="./assets/n4.png" alt=""></div>
-      <div class="balloon text-center" id="b5"><img src="./assets/n5.png" alt=""></div>
-    </div>
+      <!-- Balloons n1..n5 – đã kéo lên gần brand bằng --balloon-shift -->
+      <div class="balloons">
+        <div class="balloon text-center" id="b1"><img src="./assets/n1.png" alt=""></div>
+        <div class="balloon text-center" id="b2"><img src="./assets/n2.png" alt=""></div>
+        <div class="balloon text-center" id="b3"><img src="./assets/n3.png" alt=""></div>
+        <div class="balloon text-center" id="b4"><img src="./assets/n4.png" alt=""></div>
+        <div class="balloon text-center" id="b5"><img src="./assets/n5.png" alt=""></div>
+      </div>
+    </section>
   </main>
 
   <footer class="small" style="text-align:center">from kly ♡</footer>
