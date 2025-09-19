@@ -8,34 +8,67 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/styles.css"/>
+
+  <style>
+    /* logo top-left giống index */
+    .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
+    .logo-top img{
+      height:48px; width:auto; opacity:.95;
+      transition:transform .12s ease, filter .12s ease;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.08));
+    }
+    .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
+
+    /* dính bottom nav xuống cuối khi nội dung ít */
+    .page{ display:flex; flex-direction:column; min-height:75dvh; }
+    .spacer{ flex:1 1 auto; }
+
+    /* bottom nav đỏ, căn giữa */
+    .bottom-nav{
+      display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
+      margin-top:12px; margin-bottom:4px;
+    }
+
+    /* thẻ audio gọn đẹp */
+    .audio-card{ background:#fff; border-radius:16px; padding:16px; box-shadow:var(--shadow); margin:14px 0; }
+    .audio-card h3{ margin:0 0 8px }
+    .audio-card audio{ width:100%; margin-top:6px }
+  </style>
 </head>
 <body>
+  <!-- 1) logo -->
+  <a href="./index.html" class="logo-top" aria-label="Home"><img src="./assets/heart_logo.png" alt="logo"></a>
+
   <header>
     <h1>click to listen, naan khungf</h1>
   </header>
 
-  <main>
-    <section class="letter">
+  <main class="page">
+    <section class="audio-card">
       <h3>#1 First impression</h3>
-      <audio controls style="width:100%; margin-top:8px">
-        <source src="./assets/audio1.mp3">
+      <audio controls>
+        <source src="./assets/audio1.mp3" type="audio/mpeg">
       </audio>
     </section>
 
-    <section class="letter" style="margin-top:16px">
+    <section class="audio-card">
       <h3>#2 My promise</h3>
-      <audio controls style="width:100%; margin-top:8px">
-        <source src="./assets/audio2.mp3">
+      <audio controls>
+        <source src="./assets/audio2.mp3" type="audio/mpeg">
       </audio>
     </section>
 
-    <nav style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
-      <a class="btn" href="./quiz.html">My letter</a>
-      <a class="btn ghost" href="./index.html">Back Home</a>
+    <div class="spacer"></div>
+
+    <!-- 3) bottom nav: Back Home – Memory – My Letter -->
+    <nav class="bottom-nav">
+      <a class="btn" href="./index.html">Back Home</a>
       <a class="btn" href="./timeline.html">Memory</a>
+      <a class="btn" href="./quiz.html">My letter</a>
     </nav>
   </main>
 
-  <footer class="small">heart • hold your close</footer>
+  <!-- 2) footer -->
+  <footer class="small" style="text-align:center">from kly ♡</footer>
 </body>
 </html>
