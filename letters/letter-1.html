@@ -23,21 +23,21 @@
     </div>
 
     <article id="content" class="letter" style="display:none">
-      <h2>for you</h2>
+      <h2>For you 💌</h2>
       <p>… your letter content here …</p>
-      <p>… more text …</p>
+      <p>… add more heartfelt text …</p>
       <p class="small"><a href="../quiz.html">Back to quiz</a></p>
     </article>
   </main>
 
   <script>
-    // ==== giữ giống hệt quiz.html ====
+    // ==== CONFIG ====
     const ANSWERS = {
       q1: ["2:13 am","02:13 am","0213"],
       q2: ["bus stop","at the bus stop"],
       q3: ["pineapple"]
     };
-    const SALT = "change_this_to_your_secret_salt_11-10-25";
+    const SALT = "kly840";
 
     function normalize(s){
       return (s||"").toString().trim().toLowerCase()
@@ -50,25 +50,16 @@
     }
     async function expectedToken(){
       const keyOrder = Object.keys(ANSWERS);
-      // dùng đáp án đúng đầu tiên mỗi câu để tạo token kỳ vọng
       const joined = keyOrder.map(k => normalize(ANSWERS[k][0])).join("|") + "|" + SALT;
       return sha256Hex(joined);
     }
 
-    (async () => {
+    (async ()=>{
       const params = new URLSearchParams(location.search);
       const t = params.get("t") || "";
       const ok = t && t === await expectedToken();
-
-      const locked  = document.getElementById('locked');
-      const content = document.getElementById('content');
-      if (ok) {
-        locked.style.display = "none";
-        content.style.display = "block";
-      } else {
-        locked.style.display = "block";
-        content.style.display = "none";
-      }
+      document.getElementById('locked').style.display  = ok ? "none"  : "block";
+      document.getElementById('content').style.display = ok ? "block" : "none";
     })();
   </script>
 </body>
