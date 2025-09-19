@@ -11,11 +11,11 @@
   <link rel="stylesheet" href="./assets/styles.css"/>
 
   <style>
-    /* bố cục chặt chẽ, khoảng cách dọc ngắn */
+    /* bố cục chặt chẽ */
     .hero{
       min-height:80dvh;
       display:flex; flex-direction:column; align-items:center; justify-content:center;
-      text-align:center; gap:8px;        /* sát nhau */
+      text-align:center; gap:6px; /* rất sát nhau */
     }
 
     /* logo top-left + hover alive */
@@ -27,23 +27,23 @@
     }
     .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
-    /* hàng nút đỏ ngay dưới H1 */
-    .cta-row{
-      display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
-      margin-top:4px; margin-bottom:2px;
-    }
+    /* đẩy H1 xuống một chút */
+    h1{ margin-top:28px; }
 
-    /* ảnh brand lớn (giữa H1/Buttons và Balloons) */
+    /* hàng nút sát H1 */
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:4px; }
+
+    /* ảnh brand lớn: gần như dính vào balloons */
     .hero-brand{
       width:clamp(220px, 28vw, 420px);
-      height:auto; margin:0px auto;
+      height:auto; margin:6px auto 0;      /* ↓ giảm bottom-gap của brand */
       filter: drop-shadow(0 10px 22px rgba(0,0,0,.08));
     }
 
-    /* balloons ngay dưới brand, khoảng cách ngắn */
+    /* balloons: kéo lên gần brand */
     .balloons{
       position:relative; height:240px; width:min(900px,100%);
-      margin:0px auto;
+      margin: -2px auto 4px;               /* ↑ margin-top âm nhẹ để áp sát brand */
     }
     .balloon{position:absolute; bottom:-60px; opacity:0;
       animation:rise 6s ease-in forwards, float 3.5s ease-in-out 6s infinite}
@@ -54,9 +54,9 @@
     #b2{left:22%; animation-delay:.40s,.40s}
     #b3{left:42%; animation-delay:.70s,.70s}
     #b4{left:62%; animation-delay:1.00s,1.00s}
-    #b5{left:82%; animation-delay:1.30s,1.30s}
+    #b5{left:78%; animation-delay:1.30s,1.30s}
 
-    /* fallback keyframes nếu file css ngoài không có */
+    /* fallback keyframes */
     @keyframes rise{from{transform:translateY(36px) scale(.98); opacity:0} to{transform:translateY(-8px) scale(1); opacity:1}}
     @keyframes float{0%{transform:translateY(-8px)} 50%{transform:translateY(8px)} 100%{transform:translateY(-8px)}}
   </style>
@@ -68,20 +68,20 @@
   </a>
 
   <main class="hero">
-    <!-- H1 -->
+    <!-- (2) H1 được đẩy xuống một chút -->
     <h1>happi birthday naan. are you ready? ✨</h1>
 
-    <!-- 3 nút đỏ đặt sát tiêu đề -->
+    <!-- 3 nút đỏ ngay dưới H1 -->
     <div class="cta-row">
       <a class="btn" href="./timeline.html">Memory</a>
       <a class="btn" href="./audio.html">Audio</a>
       <a class="btn" href="./quiz.html">My letter</a>
     </div>
 
-    <!-- Ảnh brand lớn ở giữa -->
+    <!-- Ảnh brand lớn -->
     <img src="./assets/heart_logo_text.png" alt="" class="hero-brand">
 
-    <!-- Balloons n1..n5 bên dưới brand -->
+    <!-- Balloons n1..n5 – đã kéo lên gần brand -->
     <div class="balloons">
       <div class="balloon text-center" id="b1"><img src="./assets/n1.png" alt=""></div>
       <div class="balloon text-center" id="b2"><img src="./assets/n2.png" alt=""></div>
