@@ -4,17 +4,35 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <meta name="robots" content="noindex"/>
-  <title>Happi Birthday Naan</title>
+  <title>happi birthday naan. are you ready? ✨</title>
 
+  <!-- Font + Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/styles.css"/>
 
+  <!-- Vị trí + timing cho 5 balloons (n1..n5) -->
   <style>
-    .b1{left:2%;  animation-delay:.1s,.1s}
-    .b2{left:22%; animation-delay:.4s,.4s}
-    .b3{left:42%; animation-delay:.7s,.7s}
-    .b4{left:62%; animation-delay:1.0s,1.0s}
-    .b5{left:78%; animation-delay:1.3s,1.3s}
+    /* Trung tâm thân trang rõ hơn để 3 nút nằm giữa màn hình */
+    .hero{min-height:80dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:16px}
+
+    /* Container & items */
+    .balloons{position:relative; height:280px; width:min(900px,100%); margin:8px auto 4px}
+    .balloon{position:absolute; bottom:-60px; opacity:0; animation:rise 6s ease-in forwards, float 3.5s ease-in-out 6s infinite}
+    .balloon img{width:160px; height:auto; border-radius:12px; box-shadow:var(--shadow)}
+
+    /* Vị trí theo ref b1..b5 + delay khác nhau để bay lệch nhịp */
+    #b1{left:2%;  animation-delay:.10s,.10s}
+    #b2{left:22%; animation-delay:.40s,.40s}
+    #b3{left:42%; animation-delay:.70s,.70s}
+    #b4{left:62%; animation-delay:1.00s,1.00s}
+    #b5{left:78%; animation-delay:1.30s,1.30s}
+
+    /* Keyframes đã có trong styles.css; thêm phòng hờ nếu thiếu */
+    @keyframes rise{from{transform:translateY(40px) scale(.98); opacity:0} to{transform:translateY(-10px) scale(1); opacity:1}}
+    @keyframes float{0%{transform:translateY(-10px)} 50%{transform:translateY(10px)} 100%{transform:translateY(-10px)}}
+
+    /* Hàng nút giữa trang */
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:10px}
   </style>
 </head>
 <body>
@@ -23,24 +41,28 @@
   </header>
 
   <main class="hero">
-    <h1>It’s where<br/>everything starts.</h1>
-    <p class="small">happi birthday naan. are you ready? ✨</p>
+    <!-- (1) Title mới -->
+    <h1>happi birthday naan. are you ready? ✨</h1>
+    <p class="small"></p>
 
+    <!-- (4) Balloons/floating với n1..n5 -->
     <div class="balloons">
-      <div class="balloon b1"><img src="./assets/n1.png" alt=""></div>
-      <div class="balloon b2"><img src="./assets/n2.png" alt=""></div>
-      <div class="balloon b3"><img src="./assets/n3.png" alt=""></div>
-      <div class="balloon b4"><img src="./assets/n4.png" alt=""></div>
-      <div class="balloon b5"><img src="./assets/n5.png" alt=""></div>
+      <div class="balloon text-center" id="b1"><img src="./assets/n1.png" alt=""></div>
+      <div class="balloon text-center" id="b2"><img src="./assets/n2.png" alt=""></div>
+      <div class="balloon text-center" id="b3"><img src="./assets/n3.png" alt=""></div>
+      <div class="balloon text-center" id="b4"><img src="./assets/n4.png" alt=""></div>
+      <div class="balloon text-center" id="b5"><img src="./assets/n5.png" alt=""></div>
     </div>
 
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px">
+    <!-- (3) 3 nút đỏ, đặt giữa body -->
+    <div class="cta-row">
       <a class="btn" href="./timeline.html">Memory</a>
-      <a class="btn ghost" href="./audio.html">Audio</a>
+      <a class="btn" href="./audio.html">Audio</a>
       <a class="btn" href="./quiz.html">My letter</a>
     </div>
   </main>
 
-  <footer class="small" style="text-align:center">heart • hold your close</footer>
+  <!-- (2) Footer mới -->
+  <footer class="small" style="text-align:center">from kly ♡</footer>
 </body>
 </html>
