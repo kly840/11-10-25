@@ -1,96 +1,69 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="robots" content="noindex" />
-  <title>Mini-quiz — 11·10·25</title>
-  <link rel="stylesheet" href="./assets/styles.css" />
-  <style>
-    .field{margin:10px 0}
-    .lock{background:#201f2a;border:1px dashed #3b3a46;border-radius:14px;padding:14px;margin-top:12px}
-    input,button{padding:8px 10px;border-radius:6px;border:1px solid #333;background:#14141a;color:#fff;width:100%}
-    button{cursor:pointer;border:0;background:#111}
-    button:hover{background:#333}
-    label{font-size:14px;color:#aab1c6}
-  </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/>
+  <title>Unlock My Letter</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/styles.css"/>
 </head>
 <body>
   <header>
-    <h1>Mini-quiz 🎯</h1>
-    <p class="small">Trả lời đúng để mở thư bí mật.</p>
+    <h1>Heyyyy! Before you read my letter…</h1>
+    <p class="small">you gotta answer a mini-quiz to unlock it 💡</p>
   </header>
 
-  <main style="max-width:720px">
-    <form id="quiz" class="lock">
-      <div class="field">
+  <main class="two-col">
+    <!-- Col 1: Quiz -->
+    <section class="quizbox">
+      <form id="quiz">
         <label><strong>1)</strong> Our first call ended at what time?</label>
-        <input name="q1" placeholder="e.g., 02:13 AM" required />
-      </div>
-      <div class="field">
-        <label><strong>2)</strong> Where did we see the broken umbrella?</label>
-        <input name="q2" placeholder="place" required />
-      </div>
-      <div class="field">
-        <label><strong>3)</strong> The safe-word on our first trip?</label>
-        <input name="q3" placeholder="word" required />
-      </div>
-      <button type="submit" class="btn" style="width:auto">Check</button>
-      <p id="msg" class="small"></p>
-    </form>
+        <input type="text" name="q1" placeholder="e.g., 02:13 AM" required>
 
-    <nav class="mini" style="margin-top:16px;display:flex;gap:16px;flex-wrap:wrap">
-      <a class="btn" href="./timeline.html">Back to timeline</a>
-      <a class="btn" href="./index.html">Home</a>
-    </nav>
+        <label><strong>2)</strong> Where did we see the broken umbrella?</label>
+        <input type="text" name="q2" placeholder="place" required>
+
+        <label><strong>3)</strong> The safe-word on our first trip?</label>
+        <input type="text" name="q3" placeholder="word" required>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <button class="btn" type="submit">unlock my letter ^^</button>
+          <a class="btn ghost" href="./index.html">Back Home</a>
+          <a class="btn ghost" href="./audio.html">Audio</a>
+          <a class="btn ghost" href="./timeline.html">Memory</a>
+        </div>
+        <p id="msg" class="small"></p>
+      </form>
+    </section>
+
+    <!-- Col 2: Image -->
+    <aside>
+      <img src="./assets/hello_nhan_khungf_letter.png" alt="" style="border-radius:16px; box-shadow:var(--shadow)">
+    </aside>
   </main>
 
+  <footer class="small">heart • hold your close</footer>
+
   <script>
-    // ==== CONFIG ====
-    const ANSWERS = {
-      q1: ["2:13 am","02:13 am","0213"],
-      q2: ["bus stop","at the bus stop"],
-      q3: ["pineapple"]
-    };
+    const ANSWERS = { q1:["2:13 am","02:13 am","0213"], q2:["bus stop","at the bus stop"], q3:["pineapple"] };
     const SALT = "kly840";
     const LETTER_URL = "./letters/letter-1.html";
 
-    function normalize(s){
-      return (s||"").toString().trim().toLowerCase()
-        .replace(/[^\p{L}\p{N}]+/gu,"");
-    }
-    async function sha256Hex(str){
-      const enc = new TextEncoder().encode(str);
-      const buf = await crypto.subtle.digest("SHA-256", enc);
-      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-    }
+    function normalize(s){ return (s||"").toString().trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu,""); }
+    async function sha256Hex(str){ const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join(""); }
+    function isAllCorrect(fd){ return Object.keys(ANSWERS).every(k=>{const a=normalize(fd.get(k)); return (ANSWERS[k]||[]).some(ok=>normalize(ok)===a);}); }
+    async function buildCanonicalToken(){ const joined=Object.keys(ANSWERS).map(k=>normalize(ANSWERS[k][0])).join("|")+"|"+SALT; return sha256Hex(joined); }
 
-    function isAllCorrect(formData){
-      return Object.keys(ANSWERS).every(k => {
-        const a = normalize(formData.get(k));
-        return (ANSWERS[k]||[]).some(ok => normalize(ok) === a);
-      });
-    }
-
-    // ✅ build canonical token
-    async function buildCanonicalToken(){
-      const keyOrder = Object.keys(ANSWERS);
-      const joined = keyOrder.map(k => normalize(ANSWERS[k][0])).join("|") + "|" + SALT;
-      return sha256Hex(joined);
-    }
-
-    const form = document.getElementById('quiz');
-    const msg  = document.getElementById('msg');
-
-    form.addEventListener('submit', async (e)=>{
+    const form=document.getElementById('quiz'), msg=document.getElementById('msg');
+    form.addEventListener('submit', async e=>{
       e.preventDefault();
-      const data = new FormData(form);
-      if (!isAllCorrect(data)) { msg.textContent = "Hmm not yet — try again 😉"; return; }
-
-      msg.textContent = "Correct! Unlocking letter… 💖";
-      const token = await buildCanonicalToken();
-      const url = new URL(LETTER_URL, location.href);
-      url.searchParams.set("t", token);
+      const data=new FormData(form);
+      if(!isAllCorrect(data)){ msg.textContent="Hmm not yet — try again 😉"; return; }
+      msg.textContent="Correct! Unlocking letter… 💖";
+      const token=await buildCanonicalToken();
+      const url=new URL(LETTER_URL, location.href); url.searchParams.set("t", token);
       location.href = url.toString();
     });
   </script>
