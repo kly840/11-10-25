@@ -1,17 +1,75 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="robots" content="noindex"/><link rel="stylesheet" href="../assets/styles.css"/>
-  <title>Letter 1</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Letter — 11·10·25</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    .lock{background:#201f2a;border:1px dashed #3b3a46;border-radius:14px;padding:14px;margin-top:12px}
+    .letter{background:#fff;color:#222;border-radius:16px;padding:18px}
+  </style>
 </head>
-<body class="wrap center">
-  <h1>Letter 1</h1>
-  <article class="card" style="max-width:700px;text-align:left">
-    <p>to the boy who turns days into tiny galaxies—</p>
-    <p>… your letter here …</p>
-  </article>
-  <p class="mini"><a href="../quiz.html">Back to quiz</a></p>
+<body>
+  <header>
+    <h1>Your Letter ✉️</h1>
+    <p class="small">Only opens after the quiz 💡</p>
+  </header>
+
+  <main style="max-width:720px">
+    <div id="locked" class="lock">
+      <p>Locked 🔒 — Please solve the <a href="../quiz.html">mini-quiz</a> first.</p>
+    </div>
+
+    <article id="content" class="letter" style="display:none">
+      <h2>for you</h2>
+      <p>… your letter content here …</p>
+      <p>… more text …</p>
+      <p class="small"><a href="../quiz.html">Back to quiz</a></p>
+    </article>
+  </main>
+
+  <script>
+    // ==== giữ giống hệt quiz.html ====
+    const ANSWERS = {
+      q1: ["2:13 am","02:13 am","0213"],
+      q2: ["bus stop","at the bus stop"],
+      q3: ["pineapple"]
+    };
+    const SALT = "change_this_to_your_secret_salt_11-10-25";
+
+    function normalize(s){
+      return (s||"").toString().trim().toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu,"");
+    }
+    async function sha256Hex(str){
+      const enc = new TextEncoder().encode(str);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+    }
+    async function expectedToken(){
+      const keyOrder = Object.keys(ANSWERS);
+      // dùng đáp án đúng đầu tiên mỗi câu để tạo token kỳ vọng
+      const joined = keyOrder.map(k => normalize(ANSWERS[k][0])).join("|") + "|" + SALT;
+      return sha256Hex(joined);
+    }
+
+    (async () => {
+      const params = new URLSearchParams(location.search);
+      const t = params.get("t") || "";
+      const ok = t && t === await expectedToken();
+
+      const locked  = document.getElementById('locked');
+      const content = document.getElementById('content');
+      if (ok) {
+        locked.style.display = "none";
+        content.style.display = "block";
+      } else {
+        locked.style.display = "block";
+        content.style.display = "none";
+      }
+    })();
+  </script>
 </body>
 </html>
-
