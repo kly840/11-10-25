@@ -6,30 +6,28 @@
   <meta name="robots" content="noindex"/>
   <title>Happi Birthday Naan</title>
 
-  <!-- Font + Styles -->
+  <!-- Font + base theme (giữ styles.css cũ của bạn) -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/styles.css"/>
 
   <style>
-    /* ===== Controls ===== */
+    /* ===================== THEME TUNING ===================== */
     :root{
-      /* Kéo cụm balloons lên gần brand (âm = đi lên) */
-      --balloon-shift: -64px;
-      /* Khoảng cách NGANG giữa các bóng (tăng/giảm để nới/thu) */
-      --balloon-gap: clamp(16px, 5vw, 48px);
-    }
-    @media (max-width: 900px){
-      :root{ --balloon-shift: -40px; --balloon-gap: clamp(12px, 6vw, 32px); }
+      /* kích thước & khoảng cách dãy balloons (đổi là thấy ngay) */
+      --balloon-size: clamp(120px, 13vw, 160px);
+      --balloon-gap : clamp(22px, 6vw, 64px);
+      /* kéo cụm balloons tiến gần brand (âm = đi lên; giữ dọc sát brand) */
+      --balloon-shift-y: -40px;
     }
 
-    /* Layout chặt chẽ */
+    /* khối hero: khoảng cách dọc ngắn để mọi thứ khít nhau */
     .hero{
       min-height:80dvh;
       display:flex; flex-direction:column; align-items:center; justify-content:center;
-      text-align:center; gap:6px;
+      text-align:center; gap:8px;
     }
 
-    /* Logo top-left + hover */
+    /* logo góc trái + hover */
     .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
     .logo-top img{
       height:48px; width:auto; opacity:.95;
@@ -38,58 +36,69 @@
     }
     .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
-    /* H1 xuống thấp nhẹ */
-    h1{ margin-top:30px; }
+    /* tiêu đề xuống thấp nhẹ để nhường chỗ brand */
+    h1{ margin-top:26px; }
 
-    /* 3 nút đỏ */
-    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:6px; }
+    /* 3 nút đỏ ngay dưới tiêu đề */
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:4px; }
 
-    /* Cụm brand + balloons */
-    .brand-and-balloons{ display:flex; flex-direction:column; align-items:center; gap:0; }
-
-    /* Ảnh brand */
+    /* ảnh brand lớn */
     .hero-brand{
-      width:clamp(240px, 30vw, 460px);
-      height:auto; margin:6px auto 0;
+      width:clamp(260px, 32vw, 500px);
+      height:auto; margin:6px auto 0; /* rất sát dãy balloons */
       filter: drop-shadow(0 10px 22px rgba(0,0,0,.08));
     }
 
-    /* ===== Balloons: FLEX ngang + space-between ===== */
-    .balloons{
-      width:min(1000px, 92vw);
-      height:230px;
-      display:flex; align-items:flex-end; justify-content:space-between;
-      gap:var(--balloon-gap);
-      transform: translateY(var(--balloon-shift));
-      margin:0 auto 4px;
-      pointer-events:none; /* không bắt chuột */
+    /* ===================== BALLOONS (REBUILD) ===================== */
+    .balloon-row{
+      /* GRID 5 CỘT, GIÃN NGANG RÕ RÀNG */
+      display:grid;
+      grid-template-columns: repeat(5, var(--balloon-size));
+      justify-content:center;       /* toàn bộ cụm ở giữa */
+      column-gap: var(--balloon-gap);
+      row-gap: 0;
+      /* giữ dọc sát brand bằng dịch chuyển khối */
+      transform: translateY(var(--balloon-shift-y));
+      margin: 0 auto 6px;
+      width: min(1100px, 94vw);
     }
+    /* mỗi balloon là 1 ô cao đúng size, ảnh chạm đáy để có cảm giác “đứng” */
     .balloon{
-      position:relative;
-      opacity:0;
-      animation:fadeRise .8s ease forwards, float 3.8s ease-in-out 1.2s infinite;
+      height: var(--balloon-size);
+      display:flex; align-items:flex-end; justify-content:center;
+      animation: float 3.8s ease-in-out infinite;
+      opacity: 0; animation-name: fadeIn, float; animation-duration:.8s, 3.8s; animation-fill-mode:forwards, none;
     }
-    /* Stagger delay cho từng bóng (giữ id nếu bạn đã đặt sẵn) */
-    .balloon:nth-child(1){ animation-delay:.10s,.10s }
-    .balloon:nth-child(2){ animation-delay:.35s,.35s }
-    .balloon:nth-child(3){ animation-delay:.60s,.60s }
-    .balloon:nth-child(4){ animation-delay:.85s,.85s }
-    .balloon:nth-child(5){ animation-delay:1.10s,1.10s }
-
     .balloon img{
-      width:clamp(120px, 14vw, 160px); /* responsive; giữ chiều dọc như cũ */
-      height:auto; border-radius:12px; box-shadow:var(--shadow);
+      width: var(--balloon-size);
+      height: auto;
+      border-radius:12px; box-shadow:var(--shadow);
+      pointer-events:none;
+    }
+    /* stagger delay tự nhiên */
+    .balloon:nth-child(1){ animation-delay:.10s,  .10s }
+    .balloon:nth-child(2){ animation-delay:.35s,  .35s }
+    .balloon:nth-child(3){ animation-delay:.60s,  .60s }
+    .balloon:nth-child(4){ animation-delay:.85s,  .85s }
+    .balloon:nth-child(5){ animation-delay:1.10s, 1.10s }
+
+    /* responsive: màn nhỏ xếp 3-2 cho đỡ chật, vẫn căn giữa và giãn ngang */
+    @media (max-width: 800px){
+      .balloon-row{ grid-template-columns: repeat(3, var(--balloon-size)); row-gap: var(--balloon-gap); }
+    }
+    @media (max-width: 520px){
+      .balloon-row{ grid-template-columns: repeat(2, var(--balloon-size)); }
     }
 
-    /* Keyframes (fade + float) */
-    @keyframes fadeRise{from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1}}
+    /* keyframes */
+    @keyframes fadeIn{from{transform:translateY(18px);opacity:0} to{transform:translateY(0);opacity:1}}
     @keyframes float{0%{transform:translateY(0)} 50%{transform:translateY(10px)} 100%{transform:translateY(0)}}
   </style>
 </head>
 <body>
-  <!-- Logo -->
+  <!-- Logo về home -->
   <a href="./index.html" class="logo-top" aria-label="Home">
-    <img src="./assets/heart_logo.png" alt="logo">
+    <img src="./assets/heart_logo.png" alt="">
   </a>
 
   <main class="hero">
@@ -101,19 +110,17 @@
       <a class="btn" href="./quiz.html">My letter</a>
     </div>
 
-    <section class="brand-and-balloons">
-      <!-- Ảnh brand lớn -->
-      <img src="./assets/heart_logo_text.png" alt="" class="hero-brand">
+    <!-- Ảnh brand -->
+    <img src="./assets/heart_logo_text.png" alt="" class="hero-brand">
 
-      <!-- Balloons: nay đã dãn NGANG bằng flex -->
-      <div class="balloons">
-        <div class="balloon" id="b1"><img src="./assets/n1.png" alt=""></div>
-        <div class="balloon" id="b2"><img src="./assets/n2.png" alt=""></div>
-        <div class="balloon" id="b3"><img src="./assets/n3.png" alt=""></div>
-        <div class="balloon" id="b4"><img src="./assets/n4.png" alt=""></div>
-        <div class="balloon" id="b5"><img src="./assets/n5.png" alt=""></div>
-      </div>
-    </section>
+    <!-- DÃY BALLOONS: GIÃN NGANG BẰNG GRID -->
+    <div class="balloon-row" aria-label="balloons">
+      <div class="balloon"><img src="./assets/n1.png" alt=""></div>
+      <div class="balloon"><img src="./assets/n2.png" alt=""></div>
+      <div class="balloon"><img src="./assets/n3.png" alt=""></div>
+      <div class="balloon"><img src="./assets/n4.png" alt=""></div>
+      <div class="balloon"><img src="./assets/n5.png" alt=""></div>
+    </div>
   </main>
 
   <footer class="small" style="text-align:center">from kly ♡</footer>
