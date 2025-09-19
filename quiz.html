@@ -46,25 +46,25 @@
   </main>
 
   <script>
-    // ==== CONFIG (chỉnh tại đây) ====
-    // Các đáp án đúng (cho phép nhiều biến thể). Viết thường không dấu/định dạng khi so sánh.
+    // ==== CONFIG ====
     const ANSWERS = {
-      q1: ["2:13 am","02:13 am","0213"],     // ví dụ
-      q2: ["bus stop","at the bus stop"],    // ví dụ
-      q3: ["pineapple"]                      // ví dụ
+      q1: ["2:13 am","02:13 am","0213"],
+      q2: ["bus stop","at the bus stop"],
+      q3: ["pineapple"]
     };
-    // Muối bí mật (salt): đổi chuỗi này thành cái chỉ bạn biết
-    const SALT = "change_this_to_your_secret_salt_11-10-25";
-    // Đường dẫn thư
+    const SALT = "kly840";
     const LETTER_URL = "./letters/letter-1.html";
 
-    // Chuẩn hoá input để so sánh (lowercase, bỏ dấu câu/spaces cơ bản)
     function normalize(s){
       return (s||"").toString().trim().toLowerCase()
-        .replace(/[^\p{L}\p{N}]+/gu,"") // bỏ khoảng trắng & ký tự lạ
+        .replace(/[^\p{L}\p{N}]+/gu,"");
+    }
+    async function sha256Hex(str){
+      const enc = new TextEncoder().encode(str);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
     }
 
-    // Kiểm tra đúng hết
     function isAllCorrect(formData){
       return Object.keys(ANSWERS).every(k => {
         const a = normalize(formData.get(k));
@@ -72,36 +72,23 @@
       });
     }
 
-    // Tạo token SHA-256 (Web Crypto API)
-    async function sha256Hex(str){
-      const enc = new TextEncoder().encode(str);
-      const buf = await crypto.subtle.digest("SHA-256", enc);
-      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-    }
-
-    // Tạo token từ đáp án đúng + SALT
-    async function buildToken(formData){
-      // Ghép chuỗi theo thứ tự key để nhất quán
+    // ✅ build canonical token
+    async function buildCanonicalToken(){
       const keyOrder = Object.keys(ANSWERS);
-      const joined = keyOrder.map(k => normalize(formData.get(k))).join("|") + "|" + SALT;
+      const joined = keyOrder.map(k => normalize(ANSWERS[k][0])).join("|") + "|" + SALT;
       return sha256Hex(joined);
     }
 
     const form = document.getElementById('quiz');
     const msg  = document.getElementById('msg');
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async (e)=>{
       e.preventDefault();
       const data = new FormData(form);
+      if (!isAllCorrect(data)) { msg.textContent = "Hmm not yet — try again 😉"; return; }
 
-      if (!isAllCorrect(data)) {
-        msg.textContent = "Hmm not yet — try again 😉";
-        return;
-      }
       msg.textContent = "Correct! Unlocking letter… 💖";
-
-      // tạo token & chuyển sang trang thư kèm ?t=TOKEN
-      const token = await buildToken(data);
+      const token = await buildCanonicalToken();
       const url = new URL(LETTER_URL, location.href);
       url.searchParams.set("t", token);
       location.href = url.toString();
