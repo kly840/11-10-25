@@ -1,38 +1,107 @@
-/* Gallery grid */
-.gallery{
-  display:grid;
-  gap:18px;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  align-items:start;
+/* === Reset & base === */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: radial-gradient(60% 60% at 50% 35%, #1b1e29, #0e0f13);
+  color: #f6f7fb;
+  font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Links */
+a { color: #77b7ff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Headings */
+h1, h2, h3 { font-weight: 700; line-height: 1.3; }
+h1 { font-size: 32px; margin-bottom: 12px; }
+h2 { font-size: 24px; margin-bottom: 8px; }
+h3 { font-size: 18px; }
+
+/* Text */
+.small { color: #aab1c6; font-size: 13px; }
+p { margin: 6px 0; }
+
+/* Layout containers */
+header, main, footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* === Timeline Gallery (polaroid style) === */
+.gallery {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  align-items: start;
 }
 
 /* Polaroid card */
-.polaroid{
-  background:#fff; color:#222;
-  border-radius:8px;
-  box-shadow:0 10px 25px rgba(0,0,0,.25);
-  padding:10px 10px 14px;
-  transform:rotate(var(--rot,0deg));
-  transition:transform .2s ease, box-shadow .2s ease;
+.polaroid {
+  background: #fff;
+  color: #222;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.25);
+  padding: 10px 10px 14px;
+  transform: rotate(var(--rot,0deg));
+  transition: transform .2s ease, box-shadow .2s ease;
 }
-.polaroid:hover{
-  transform:rotate(var(--rot,0deg)) translateY(-3px);
-  box-shadow:0 14px 30px rgba(0,0,0,.35);
-}
-
-.polaroid img{
-  width:100%; height:auto; display:block; border-radius:6px;
-  aspect-ratio: 4 / 3; object-fit:cover;
+.polaroid:hover {
+  transform: rotate(var(--rot,0deg)) translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.35);
 }
 
-.caption{ margin-top:10px; }
-.caption .title{ font-weight:700; line-height:1.3; }
-.caption .when{ color:#666; font-size:12px; margin-top:2px; }
-
-/* “kệ ảnh” vibe nhẹ */
-.polaroid::after{
-  content:""; display:block; height:6px; border-radius:999px;
-  background:linear-gradient(90deg, rgba(0,0,0,.10), rgba(0,0,0,.18), rgba(0,0,0,.10));
-  filter:blur(2px); opacity:.7; margin-top:8px;
+.polaroid img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
 }
 
+.caption { margin-top: 10px; }
+.caption .title { font-weight: 700; }
+.caption .when { color: #666; font-size: 12px; margin-top: 2px; }
+
+/* Polaroid shadow “kệ ảnh” */
+.polaroid::after {
+  content: "";
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(0,0,0,.10), rgba(0,0,0,.18), rgba(0,0,0,.10));
+  filter: blur(2px);
+  opacity: .7;
+  margin-top: 8px;
+}
+
+/* === Buttons === */
+.btn {
+  background: #111;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.btn:hover { background: #333; }
+
+/* === Messages & Errors === */
+.empty, .error {
+  background: #201f2a;
+  border: 1px dashed #3b3a46;
+  border-radius: 14px;
+  padding: 14px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* === Footer === */
+footer {
+  font-size: 13px;
+  color: #aab1c6;
+  margin: 24px auto;
+}
