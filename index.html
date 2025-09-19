@@ -32,10 +32,12 @@
 
     /* ảnh brand lớn ở GIỮA (sau H1 & nút, trước balloons) */
     .hero-brand{
-      width:clamp(220px, 28vw, 420px);
-      height:auto; margin:6px auto 8px;
-      filter: drop-shadow(0 10px 22px rgba(0,0,0,.08));
+    width:clamp(220px, 28vw, 420px);
+    height:auto; 
+    margin:6px auto 2px; /* giảm margin-bottom cho sát balloons */
+    filter: drop-shadow(0 10px 22px rgba(0,0,0,.08));
     }
+
 
     /* balloons n1..n5 */
     .balloons{position:relative; height:260px; width:min(900px,100%); margin:0px auto}
