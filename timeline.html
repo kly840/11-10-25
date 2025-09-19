@@ -35,7 +35,9 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const CSV_URL = "PASTE_YOUR_PUBLISHED_CSV_LINK_HERE"; // ends with output=csv
+      // CSV đã publish (bạn có thể thay link khác nếu cần)
+      const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSQN4PFm-uNK4cj4ZDjz8K5xxXE6SYGw-sr5lZ0kaAJGHFhd4jcfjuJ_-wBnF96FhbvTThDQz7iZBU/pub?gid=453699801&single=true&output=csv";
+
       const listEl  = document.getElementById('list');
       const loadBtn = document.getElementById('loadMore');
       const statusEl= document.getElementById('status');
@@ -48,7 +50,7 @@
         const title = (r["Title"] || "").toString().trim();
         const why   = (r["Why is this memorable to u?"] || "").toString().trim();
         const photo = (r["Photo URL"] || "").toString().trim();
-        const img   = photo && /^https?:\/\//i.test(photo) ? `<img loading="lazy" src="${photo}" alt="">` : "";
+        const img   = photo && /^https?:\/\//i.test(photo) ? `<img loading="lazy" class="img-card" src="${photo}" alt="">` : "";
         return `
           <article class="polaroid" style="--rot:${rot}deg">
             ${img}
