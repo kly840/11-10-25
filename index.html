@@ -1,44 +1,48 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="robots" content="noindex" />
-  <title>Our Timeline — 11·10·25</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/>
+  <title>Happi Birthday Naan</title>
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="./assets/styles.css" />
+  <!-- Font + Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/styles.css"/>
 
-  <!-- PapaParse to read CSV -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    /* vị trí & delay cho 5 balloon */
+    .b1{left:2%;  animation-delay:.1s,.1s}
+    .b2{left:22%; animation-delay:.4s,.4s}
+    .b3{left:42%; animation-delay:.7s,.7s}
+    .b4{left:62%; animation-delay:1.0s,1.0s}
+    .b5{left:78%; animation-delay:1.3s,1.3s}
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Our memories</h1>
-    <p class="small">Add yours via the form → <a href="./add.html">here</a>.</p>
+  <header style="text-align:center;margin-top:18px">
+    <img src="./assets/heart_logo_text.png" alt="" style="height:54px;margin:0 auto 6px;opacity:.9">
   </header>
 
-  <main>
-    <div id="status"></div>
+  <main class="hero">
+    <h1>It’s where<br/>everything starts.</h1>
+    <p class="small">happi birthday naan. are you ready? ✨</p>
 
-    <!-- Gallery container -->
-    <section id="list" class="gallery" aria-live="polite"></section>
-
-    <!-- Load more -->
-    <div style="text-align:center;margin-top:16px">
-      <button id="loadMore" class="btn">Load more</button>
+    <div class="balloons">
+      <div class="balloon b1"><img src="./assets/n1.png" alt=""></div>
+      <div class="balloon b2"><img src="./assets/n2.png" alt=""></div>
+      <div class="balloon b3"><img src="./assets/n3.png" alt=""></div>
+      <div class="balloon b4"><img src="./assets/n4.png" alt=""></div>
+      <div class="balloon b5"><img src="./assets/n5.png" alt=""></div>
     </div>
 
-    <nav class="mini" style="margin-top:16px; display:flex; gap:16px; flex-wrap:wrap">
-      <a class="btn" href="./quiz.html">Take the mini-quiz</a>
-      <a class="btn" href="./index.html">Back home</a>
-      <a class="btn" href="./audio.html">Audio love notes</a>
-    </nav>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px">
+      <a class="btn" href="./timeline.html">Memory</a>
+      <a class="btn ghost" href="./audio.html">Audio</a>
+      <a class="btn" href="./quiz.html">My letter</a>
+    </div>
   </main>
 
-  <footer>11·10·25 — made with love.</footer>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Your published CSV (Google Sheet → Publish to web → CSV)
-      const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSQN4PFm-uNK4cj4ZDjz8K5xxXE6SYGw-sr5l_
+  <footer class="small" style="text-align:center">heart • hold your close</footer>
+</body>
+</html>
