@@ -1,27 +1,41 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="robots" content="noindex"/><link rel="stylesheet" href="./assets/styles.css"/>
-  <title>Audio Love Notes</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/>
+  <title>Listen đi &gt;&lt;</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/styles.css"/>
 </head>
-<body class="wrap">
-  <main style="max-width:720px;margin:0 auto">
-    <h1>Audio love notes 🎧</h1>
+<body>
+  <header>
+    <h1>click to listen, naan khungf</h1>
+  </header>
 
-    <section class="card">
+  <main>
+    <section class="letter">
       <h3>#1 First impression</h3>
-      <audio controls src="./assets/beep.mp3"></audio>
+      <audio controls style="width:100%; margin-top:8px">
+        <source src="./assets/audio1.mp3">
+      </audio>
     </section>
 
-    <section class="card">
+    <section class="letter" style="margin-top:16px">
       <h3>#2 My promise</h3>
-      <audio controls src="https://drive.google.com/file/d/1UPrF91jtJvb-xcxkNuURGBVb1JyxnmwR/view?usp=drive_link"></audio>
+      <audio controls style="width:100%; margin-top:8px">
+        <source src="./assets/audio2.mp3">
+      </audio>
     </section>
 
-    <p class="mini">Tip: you can keep audio in <code>assets/</code> or host elsewhere and paste the URL.</p>
-    <p class="mini"><a href="./index.html">Home</a></p>
+    <nav style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
+      <a class="btn" href="./quiz.html">My letter</a>
+      <a class="btn ghost" href="./index.html">Back Home</a>
+      <a class="btn" href="./timeline.html">Memory</a>
+    </nav>
   </main>
+
+  <footer class="small">heart • hold your close</footer>
 </body>
 </html>
-
