@@ -24,6 +24,9 @@ h1,h2,h3{line-height:1.25;margin:0 0 8px}
 h1 {
   text-align: center;
 }
+title {
+  text-align: center;
+}
 h1{font-size:40px;color:var(--accent)}
 h2{font-size:28px}
 h3{font-size:18px}
