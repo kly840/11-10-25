@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <style>
-    /* logo top-left + hover (y như index) */
+    /* Logo top-left giống index */
     .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
     .logo-top img{
       height:48px; width:auto; opacity:.95;
@@ -20,53 +20,71 @@
     }
     .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
-    /* layout để nav dính cuối trang khi nội dung ít */
+    /* Trang chính: để bottom-nav dính gần footer khi nội dung ít */
     .page{ display:flex; flex-direction:column; min-height:75dvh; }
 
-    /* callout form: đậm + gấp đôi kích thước thường (giữ như cũ) */
+    /* Callout to form: to/đậm (giữ màu từ styles.css) */
     .callout{
       font-weight:800;
-      font-size:clamp(18px, 3.2vw, 26px);
+      font-size:clamp(18px,3.2vw,26px);
       margin:8px 0 10px;
     }
 
-    /* gallery grid (nhiều item vẫn ok) */
+    /* Gallery grid: tự chia cột khi nhiều items */
     .gallery{
       display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap:16px;
-      align-items:start;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap:14px;
+      padding:8px 12px;
     }
 
-    /* Polaroid card (giữ style gốc từ styles.css), chỉ thêm media vuông & why nhỏ hơn */
-    .polaroid{ position:relative; }
-    .polaroid .media-1x1{
-      aspect-ratio: 1 / 1;        /* luôn vuông */
-      width: 100%;
+    /* Polaroid card (không đổi màu, chỉ layout) */
+    .polaroid{
+      border-radius:16px;
+      padding:10px;
+      box-shadow:var(--shadow, 0 8px 22px rgba(0,0,0,.08));
+      transform: rotate(var(--rot, 0deg));
+      background: var(--paper, #fff);
+    }
+
+    /* Media square 1:1 cho ảnh & video */
+    .media-square{
+      position:relative;
+      width:100%;
+      aspect-ratio: 1 / 1;   /* CHUẨN 1:1 */
       border-radius:12px;
       overflow:hidden;
-      background: rgba(0,0,0,.04); /* nền nhẹ khi chờ ảnh/video */
+      background: rgba(0,0,0,.03);
+      margin-bottom:8px;
     }
-    .polaroid .media-1x1 img{
-      width:100%; height:100%; object-fit:cover; display:block;
+    /* Ảnh cover 1:1 */
+    .media-square img.cover{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit:cover; object-position:center;
+      display:block; border:0;
     }
-    .polaroid .media-1x1 iframe{
-      width:100%; height:100%; border:0; display:block;
+    /* Video Drive /preview: crop để “cover” khung vuông */
+    .media-square iframe.video-iframe{
+      position:absolute; inset:0;
+      /* Giả định nội dung 16:9 -> để COVER khung vuông, mở rộng ngang ~177.78% */
+      width:177.78%; height:100%;
+      left:-38.89%; top:0;
+      border:0;
     }
 
-    .polaroid .caption .why{ font-size:.9em; line-height:1.45; } /* why nhỏ hơn một chút */
-    .polaroid .when{ opacity:.8; font-size:.9em; }
+    /* Caption */
+    .caption .title{ font-weight:800; line-height:1.3; }
+    .caption .when{ font-size:.9em; opacity:.85; margin-top:2px; }
+    /* Nhỏ hơn một chút cho phần “Why is this memorable to u?” */
+    .caption p{ font-size:.9em; line-height:1.5; margin-top:6px; }
 
-    /* nav cuối trang */
+    /* Bottom nav */
     .spacer{ flex:1 1 auto; }
     .bottom-nav{
       display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       margin-top:12px; margin-bottom:4px;
     }
-
-    /* nút “load more” fallback nếu browser không hỗ trợ IntersectionObserver */
-    .load-more-wrap{ text-align:center; margin:10px 0 0 }
-    .load-more{ display:inline-block; padding:8px 14px; border-radius:20px; font-weight:700; border:0; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -86,18 +104,12 @@
   <main class="page">
     <div id="status"></div>
 
-    <!-- gallery -->
+    <!-- Gallery -->
     <section id="list" class="gallery" aria-live="polite"></section>
-
-    <!-- sentinel cho lazy render -->
-    <div id="sentinel"></div>
-    <div class="load-more-wrap" id="fallbackLoadMore" style="display:none;">
-      <button class="load-more btn" id="btnLoadMore">Load more</button>
-    </div>
 
     <div class="spacer"></div>
 
-    <!-- bottom nav -->
+    <!-- Bottom nav giống index/timeline -->
     <nav class="bottom-nav">
       <a class="btn" href="./index.html">Back Home</a>
       <a class="btn" href="./quiz.html">My letter</a>
@@ -109,56 +121,53 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // CSV đã publish
+      // CSV đã publish của bạn
       const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSQN4PFm-uNK4cj4ZDjz8K5xxXE6SYGw-sr5lZ0kaAJGHFhd4jcfjuJ_-wBnF96FhbvTThDQz7iZBU/pub?gid=453699801&single=true&output=csv";
 
-      const listEl   = document.getElementById('list');
-      const statusEl = document.getElementById('status');
-      const sentinel = document.getElementById('sentinel');
-      const btnMore  = document.getElementById('btnLoadMore');
-      const fallbackBox = document.getElementById('fallbackLoadMore');
+      const listEl  = document.getElementById('list');
+      const statusEl= document.getElementById('status');
 
-      const PAGE_SIZE = 12;
-      let rows = [], page = 0, io = null;
-
-      /* -------- Helpers -------- */
-
-      // Chuẩn hóa type = "Video" / "Photo" (fallback nếu cột Type thiếu)
-      function detectType(url, typeCell) {
-        const t = (typeCell || "").toString().trim().toLowerCase();
-        if (t === "video" || t === "photo") return t;
-        const u = (url || "").toString().trim().toLowerCase();
-        if (/\/preview(\?|$)/.test(u)) return "video";
-        if (/\.(mp4|mov|m4v|webm|avi|mkv)(\?|$)/.test(u)) return "video";
-        return "photo";
+      // Render helpers
+      function toDirectImageURL(u){
+        if(!u) return "";
+        const m = u.match(/drive\.google\.com\/file\/d\/([^/]+)/) || u.match(/[?&]id=([^&]+)/);
+        // Nếu là link Drive ảnh chưa chuyển -> dùng thumbnail id=... (ổn định cho ảnh)
+        return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1200` : u;
       }
 
-      // Render media vuông 1:1 (img hoặc iframe)
-      function renderMedia(url, type, altText){
-        const u = (url || "").trim();
-        if (type === "video") {
-          // Nếu user dán link /view, đổi sang /preview
-          const m = u.match(/\/file\/d\/([^/]+)\/view/);
-          const src = m ? `https://drive.google.com/file/d/${m[1]}/preview` : u;
+      // type: "Photo" hoặc "Video"
+      function renderMedia(url, type){
+        const raw = (url || "").trim();
+        const kind = (type || "").trim().toLowerCase();
+
+        if (kind === "video"){
+          // Bảo đảm là /preview (nếu người dùng lỡ dán /view)
+          let src = raw;
+          const mv = raw.match(/\/file\/d\/([^/]+)\/view/);
+          if (mv) src = `https://drive.google.com/file/d/${mv[1]}/preview`;
           return `
-            <div class="media-1x1">
-              <iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" referrerpolicy="no-referrer"></iframe>
-            </div>`;
+            <div class="media-square">
+              <iframe class="video-iframe" src="${src}" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" referrerpolicy="no-referrer"></iframe>
+            </div>
+          `;
         }
-        // Photo (đã là thumbnail/direct). Nếu là link Drive /view?id=..., bạn có thể tự convert ở Sheet.
+
+        // Photo (mặc định)
+        const imgSrc = toDirectImageURL(raw);
         return `
-          <div class="media-1x1">
-            <img loading="lazy" src="${u}" alt="${altText}">
-          </div>`;
+          <div class="media-square">
+            <img class="cover" src="${imgSrc}" alt="">
+          </div>
+        `;
       }
 
       function cardHTML(r, rot){
-        const when   = (r["When"] || "").toString().trim();
-        const title  = (r["Title"] || "").toString().trim();
-        const why    = (r["Why is this memorable to u?"] || "").toString().trim();
-        const url    = (r["Photo URL"] || "").toString().trim();
-        const type   = detectType(url, r["Type"]);  // ưu tiên cột Type nếu có
-        const media  = url ? renderMedia(url, type, title || "memory") : "";
+        const when  = (r["When"] || "").toString().trim();
+        const title = (r["Title"] || "").toString().trim();
+        const why   = (r["Why is this memorable to u?"] || "").toString().trim();
+        const type  = (r["Type"] || "").toString().trim();           // "Photo" | "Video" (từ Form)
+        const url   = (r["Photo URL"] || "").toString().trim();      // đã là thumbnail/preview theo công thức Sheet
+        const media = renderMedia(url, type);
 
         return `
           <article class="polaroid" style="--rot:${rot}deg">
@@ -166,61 +175,37 @@
             <div class="caption">
               <div class="title">${title || "(untitled)"}</div>
               ${when ? `<div class="when">${when}</div>` : ``}
-              ${why  ? `<p class="why">${why}</p>` : ``}
+              ${why ? `<p>${why}</p>` : ``}
             </div>
           </article>
         `;
       }
 
+      // Tối ưu: tải từng “page” để đỡ giật nếu quá nhiều ảnh
+      const PAGE_SIZE = 12;
+      let rows = [], page = 0;
+
       function renderNext(){
-        const start = page * PAGE_SIZE;
-        const slice = rows.slice(start, start + PAGE_SIZE);
-        if (!slice.length) return false;
-        const html = slice.map(r => cardHTML(r, (Math.random()*4-2).toFixed(2))).join("");
+        const start = page * PAGE_SIZE, slice = rows.slice(start, start + PAGE_SIZE);
+        if (!slice.length) return;
+        const html = slice.map(r => cardHTML(r, (Math.random()*4 - 2).toFixed(2))).join("");
         listEl.insertAdjacentHTML('beforeend', html);
         page++;
-        return true;
       }
 
-      function setupInfiniteScroll(){
-        if ('IntersectionObserver' in window) {
-          io = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-              if (e.isIntersecting) {
-                const ok = renderNext();
-                if (!ok) io.disconnect();
-              }
-            });
-          }, { rootMargin: '200px 0px' });
-          io.observe(sentinel);
-        } else {
-          // Fallback nút "Load more"
-          fallbackBox.style.display = 'block';
-          btnMore.addEventListener('click', () => {
-            const ok = renderNext();
-            if (!ok) btnMore.disabled = true;
-          });
-        }
-      }
-
-      /* -------- Fetch CSV -------- */
       fetch(CSV_URL, { cache: "no-store" })
         .then(r => r.text())
         .then(text => {
           const parsed = Papa.parse(text, { header: true });
-          rows = (parsed.data || []).filter(r => r && r["Title"] && r["Title"].toString().trim());
-          // Sort theo Timestamp mới → cũ (nếu có)
-          rows.sort((a,b) => new Date(b["Timestamp"] || 0) - new Date(a["Timestamp"] || 0));
-
-          if (!rows.length) {
+          rows = (parsed.data || []).filter(r => r && r["Title"] && r["Title"].trim());
+          // Sort theo Timestamp mới nhất trước
+          rows.sort((a,b) => new Date(b["Timestamp"]||0) - new Date(a["Timestamp"]||0));
+          if (!rows.length){
             statusEl.innerHTML = `<div class="empty">No memories yet 💌</div>`;
             return;
           }
-
-          // Render trang đầu
-          renderNext();
-          // Bật infinite scroll
-          setupInfiniteScroll();
+          // Render toàn bộ (chia lô)
+          while (page * PAGE_SIZE < rows.length) renderNext();
         })
         .catch(err => {
           console.error(err);
