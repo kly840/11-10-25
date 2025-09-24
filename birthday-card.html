@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blow the Candle 🎂</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff5e7; --text:#590202; --accent:#ce2800;
+    --btn-radius:25px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font:16px/1.6 "Montserrat",ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card{
+    width:min(720px,92vw); text-align:center; padding:18px 18px 28px;
+  }
+  /* top-left logo like your site (optional: drop it if you prefer clean) */
+  .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
+  .logo-top img{ height:48px; width:auto; opacity:.95; transition:transform .12s ease, filter .12s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
+  .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
+
+  h1{font-size:40px; margin:10px 0 6px; color:var(--accent)}
+  p.small{opacity:.8; margin:0 0 12px}
+
+  /* Candle stage */
+  .stage{
+    position:relative; margin:6px auto 10px; width:240px; height:320px;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+  }
+  .cake{
+    position:absolute; bottom:35px; left:50%; transform:translateX(-50%);
+    width:220px; height:90px; background:#ffd5c0; border-radius:12px;
+    box-shadow:0 8px 22px rgba(0,0,0,.08) inset;
+  }
+  .cake:before{
+    content:""; position:absolute; inset:6px; border-radius:10px; background:#ffe9df;
+  }
+  .candle{
+    position:absolute; bottom:120px; left:50%; transform:translateX(-50%);
+    width:18px; height:100px; background:#f4faff; border-radius:9px;
+    box-shadow:0 2px 0 rgba(0,0,0,.05) inset;
+    display:flex; align-items:flex-start; justify-content:center;
+    cursor:pointer; /* tap to blow */
+  }
+  .wick{
+    width:3px; height:18px; background:#2b2b2b; margin-top:-10px; border-radius:2px;
+  }
+  .flame{
+    position:absolute; top:-28px; width:22px; height:34px; left:50%; transform:translateX(-50%);
+    background:radial-gradient(ellipse at center, #fff6a9 0%, #ffd86e 35%, #ff9c2d 60%, rgba(255,152,0,0.2) 100%);
+    border-radius:50% 50% 60% 60%;
+    filter: blur(0.2px);
+    animation: flicker 0.09s infinite alternate ease-in-out;
+    transform-origin:50% 100%;
+  }
+  @keyframes flicker{
+    from{ transform:translateX(-50%) scale(1) rotate(-2deg); box-shadow:0 -6px 22px rgba(255,187,0,.7) }
+    to  { transform:translateX(-50%) scale(1.04) rotate(2deg); box-shadow:0 -10px 28px rgba(255,190,0,.9) }
+  }
+  .hint{
+    margin-top:220px; font-size:14px; opacity:.8;
+  }
+
+  /* Controls */
+  .controls{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:8px }
+  .btn{
+    display:inline-block; background:var(--accent); color:#fff; border:0;
+    padding:10px 18px; border-radius:var(--btn-radius); font-weight:700; cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease; box-shadow:0 8px 24px rgba(0,0,0,.12);
+    text-decoration:none;
+  }
+  .btn:hover{ transform:translateY(-1px); box-shadow:0 12px 30px rgba(0,0,0,.18)}
+  .btn-ghost{ background:#fff; color:var(--accent); border:2px solid var(--accent) }
+
+  /* Message after blow */
+  .wish{ display:none; margin-top:12px; }
+  .wish h2{ margin:4px 0 6px; }
+  .wish p{ margin:0; }
+
+  /* Confetti */
+  .confetti{ position:fixed; top:-10px; width:8px; height:14px; opacity:.9;
+    animation: drop linear forwards; }
+  @keyframes drop{ to{ transform:translateY(120vh) rotate(460deg); opacity:1 } }
+
+  footer{ margin:20px auto 8px; text-align:center; font-size:13px; color:#7c3d2f; }
+
+  /* Responsive */
+  @media (max-width:480px){
+    h1{font-size:32px}
+    .stage{width:200px; height:300px}
+    .cake{width:190px}
+  }
+</style>
+</head>
+<body>
+  <!-- optional logo (same as your site) -->
+  <a href="./index.html" class="logo-top" aria-label="Home">
+    <img src="./assets/heart_logo.png" alt="logo">
+  </a>
+
+  <div class="card">
+    <h1>blow the candle 🎂</h1>
+    <p class="small">allow mic (or just tap the flame) → make a wish</p>
+
+    <div class="stage" id="stage">
+      <div class="candle" id="candle" title="Tap to blow">
+        <div class="flame" id="flame"></div>
+        <div class="wick"></div>
+      </div>
+      <div class="cake"></div>
+      <div class="hint" id="hint">tip: blow towards your mic… or tap the flame</div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="relight" style="display:none">Relight</button>
+      <a class="btn-ghost btn" href="./index.html">Back Home</a>
+      <a class="btn-ghost btn" href="./timeline.html">Memory</a>
+      <a class="btn-ghost btn" href="./quiz.html">My letter</a>
+    </div>
+
+    <section class="wish" id="wish">
+      <h2>Make a wish, naan ✨</h2>
+      <p>Happi birthday, my naan 💛 Close your eyes, make a wish, and blow! No matter where we are, I’m always right beside you — today and every day. <br>from kly ♡</p>
+    </section>
+
+    <footer>from kly ♡</footer>
+  </div>
+
+<script>
+  // --- Candle logic ---
+  const flame = document.getElementById('flame');
+  const candle = document.getElementById('candle');
+  const relightBtn = document.getElementById('relight');
+  const wishBox = document.getElementById('wish');
+  const hint = document.getElementById('hint');
+
+  let blown = false;
+  let audioStream = null, audioCtx = null, analyser = null, dataArray = null;
+
+  function confettiBurst(){
+    for(let i=0;i<90;i++){
+      const s=document.createElement('span');
+      s.className='confetti';
+      const hue = Math.floor(Math.random()*360);
+      s.style.background = `hsl(${hue} 90% 60%)`;
+      s.style.left = Math.random()*100+'vw';
+      s.style.animationDuration = (1.2 + Math.random()*1.2) + 's';
+      s.style.transform = `translateY(-10px) rotate(${Math.random()*180}deg)`;
+      document.body.appendChild(s);
+      setTimeout(()=>s.remove(), 2600);
+    }
+  }
+
+  function blowOut(){
+    if (blown) return;
+    blown = true;
+    flame.style.display = 'none';
+    hint.textContent = "your wish is on the way ✨";
+    wishBox.style.display = 'block';
+    relightBtn.style.display = 'inline-block';
+    confettiBurst();
+  }
+
+  function relight(){
+    blown = false;
+    flame.style.display = 'block';
+    wishBox.style.display = 'none';
+    relightBtn.style.display = 'none';
+    hint.textContent = "tip: blow towards your mic… or tap the flame";
+  }
+
+  // Tap/click fallback
+  candle.addEventListener('click', blowOut);
+  relightBtn.addEventListener('click', relight);
+
+  // --- Microphone blow detection (Web Audio) ---
+  async function initMic(){
+    try{
+      audioStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:true, noiseSuppression:true }, video:false });
+    }catch(e){
+      // mic denied -> rely on tap
+      hint.textContent = "tap the flame to blow 🎈";
+      return;
+    }
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = audioCtx.createMediaStreamSource(audioStream);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 1024;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    src.connect(analyser);
+    listen();
+  }
+
+  function volumeEstimate(){
+    analyser.getByteTimeDomainData(dataArray);
+    // RMS (rough)
+    let sum=0;
+    for(let i=0;i<dataArray.length;i++){
+      const v = (dataArray[i]-128)/128;
+      sum += v*v;
+    }
+    return Math.sqrt(sum/dataArray.length);
+  }
+
+  function listen(){
+    if (!analyser) return;
+    const rms = volumeEstimate();
+    // Threshold tuning: typical blow ~ 0.12~0.2 depending on mic;
+    if (rms > 0.14) {
+      blowOut();
+    }
+    if (!blown) requestAnimationFrame(listen);
+  }
+
+  // kick off mic (best effort)
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    initMic();
+  } else {
+    hint.textContent = "tap the flame to blow 🎈";
+  }
+</script>
+</body>
+</html>
