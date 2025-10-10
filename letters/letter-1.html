@@ -22,6 +22,9 @@
     /* trang: để nav dính đáy khi nội dung ít */
     .page{ display:flex; flex-direction:column; min-height:75dvh; }
 
+    header h1{ margin-bottom:6px }
+    header h2{ margin-top:0; font-size:clamp(16px,2.8vw,18px); opacity:.9 }
+
     /* vùng trung tâm gồm 3 cột: trái (ảnh) – giữa (thư) – phải (ảnh) */
     .stage{
       display:grid; grid-template-columns: 160px minmax(300px, 720px) 160px; gap:16px;
@@ -29,11 +32,14 @@
     }
     @media (max-width:980px){
       .stage{ grid-template-columns: 1fr; }
-      .side-left,.side-right{ justify-content:center; }
+      .side-left,.side-right{ justify-content:center; flex-direction:row; }
     }
 
     /* khung thư trắng ở giữa */
-    .letter-card{ background:var(--paper); color:var(--text); border-radius:18px; padding:20px; box-shadow:var(--shadow); }
+    .letter-card{
+      background:var(--paper, #fff); color:var(--text, #590202);
+      border-radius:18px; padding:20px; box-shadow:var(--shadow, 0 8px 22px rgba(0,0,0,.08));
+    }
 
     /* cột ảnh trái/phải (ảnh nằm ngoài card) */
     .side-left, .side-right{ display:flex; flex-direction:column; gap:14px; }
@@ -44,11 +50,21 @@
     /* nhấn ảnh chính một chút lớn hơn */
     .side-left img.big, .side-right img.big{ width: clamp(62px, 8vw, 100px); }
 
-    /* bottom nav giống timeline */
+    /* bottom nav: 4 nút, thứ tự & màu theo yêu cầu */
     .spacer{ flex:1 1 auto; }
     .bottom-nav{
       display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       margin-top:16px; margin-bottom:4px;
+    }
+    /* Back Home: trắng chữ đỏ (ghost) */
+    .btn-ghost{
+      background:#fff; color:var(--accent, #ce2800);
+      border:2px solid var(--accent, #ce2800);
+    }
+
+    /* trạng thái khoá */
+    .empty{
+      text-align:center; margin:18px auto 0; font-weight:700;
     }
   </style>
 </head>
@@ -64,15 +80,15 @@
   </header>
 
   <main class="page">
-    <!-- Locked state (giữ nguyên) -->
-    <div id="locked" class="empty">Locked leu leu 🔒 - Please solve the <a href="../quiz.html">mini-quiz</a> first.</div>
+    <!-- Locked state -->
+    <div id="locked" class="empty">Locked leu leu 🔒 — Please solve the <a href="../quiz.html">mini-quiz</a> first.</div>
 
     <!-- 3 cột: trái (ảnh) – giữa (thư) – phải (ảnh) -->
     <section id="stage" class="stage" style="display:none">
-      <!-- 3) Ảnh bên trái (ngoài khung thư) -->
+      <!-- Ảnh bên trái (ngoài khung thư) -->
       <aside class="side-left">
-        <img src="../assets/hello_nhan_khungf_stamp.png" alt="" class="big">
-        <img src="../assets/mini_heart.png" alt="">
+        <img src="../assets/hello_nhan_khungf_stamp.png" alt="stamp" class="big">
+        <img src="../assets/mini_heart.png" alt="mini heart">
       </aside>
 
       <!-- Khung thư trắng ở giữa -->
@@ -81,47 +97,82 @@
         <p class="small" style="margin:8px 0 12px">November 11, 2025</p>
 
         <h3>Dear Naan,</h3>
-        <p>Since you can answer the quiz, you actually understand me hihi</p>
-        <p>abc xyz … (viết nội dung thư ở đây)</p>
-
-        <p style="margin-top:18px">Yours,<br/>Kylie</p>
+        <p>Since you can answer the quiz, you actually understand me hihi.</p>
+        <p>
+          This letter is my little universe for you — where every tiny thing reminds me of us:
+          the late calls, our silly jokes, and the way you always make my day softer.
+        </p>
+        <p>
+          I’m proud of us — choosing each other every day, even from far away.
+          Thank you for being patient, kind, and goofy with me. I treasure you more than words.
+        </p>
+        <p style="margin-top:18px">
+          Yours,<br/>Kly ♡
+        </p>
       </article>
 
-      <!-- 3) Ảnh bên phải (ngoài khung thư) -->
+      <!-- Ảnh bên phải (ngoài khung thư) -->
       <aside class="side-right">
-        <img src="../assets/red_heart.png" alt="" class="big">
-        <img src="../assets/mini_heart.png" alt="">
+        <img src="../assets/red_heart.png" alt="red heart" class="big">
+        <img src="../assets/mini_heart.png" alt="mini heart">
       </aside>
     </section>
 
     <div class="spacer"></div>
 
-    <!-- 4) Nút đỏ, căn giữa, sát đáy -->
+    <!-- 4 nút: Back Home (trắng), Audio, Blow the Candle, Memory -->
     <nav class="bottom-nav">
-      <a class="btn" href="../index.html">Back Home</a>
-      <a class="btn" href="../timeline.html">Memory</a>
+      <a class="btn btn-ghost" href="../index.html">Back Home</a>
       <a class="btn" href="../audio.html">Audio</a>
+      <a class="btn" href="../birthday-card.html">Blow the Candle</a>
+      <a class="btn" href="../timeline.html">Memory</a>
     </nav>
   </main>
 
   <!-- 2) Footer -->
   <footer class="small" style="text-align:center">from kly ♡</footer>
 
-  <!-- JS: kiểm tra token (giữ như trước) -->
+  <!-- JS: kiểm tra token (đồng bộ quiz.html) -->
   <script>
-    const ANSWERS = { q1:["2:13 am","02:13 am","0213"], q2:["bus stop","at the bus stop"], q3:["pineapple"] };
+    // ===== MUST MATCH quiz.html =====
+    // LƯU Ý: Chỉ phần tử ĐẦU TIÊN của mỗi mảng được dùng làm "đáp án chuẩn" để tạo token.
+    const ANSWERS = {
+      q1: ["18", "18h", "18 hours"],
+      q2: ["ocean after a storm", "ocean after the storm", "the ocean after a storm", "the ocean after the storm", "ocean after a big storm", "ocean after the big storm"],
+      q3: ["ong ba anh", "ông bà anh"]
+    };
     const SALT = "kly840";
-    function normalize(s){ return (s||"").toString().trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu,""); }
-    async function sha256Hex(str){ const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join(""); }
-    async function expectedToken(){ const joined=Object.keys(ANSWERS).map(k=>normalize(ANSWERS[k][0])).join("|")+"|"+SALT; return sha256Hex(joined); }
 
-    (async()=>{
-      const t = new URLSearchParams(location.search).get("t") || "";
-      const ok = t && t === await expectedToken();
+    function normalizeStrict(s){
+      return (s||"")
+        .toString()
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"") /* remove diacritics */
+        .replace(/[^a-z0-9]+/g,"");      /* keep letters & digits only */
+    }
+    async function sha256Hex(str){
+      const bytes = new TextEncoder().encode(str);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+    }
+    async function expectedToken(){
+      const canon = Object.keys(ANSWERS).map(k => normalizeStrict(ANSWERS[k][0])).join("|");
+      return sha256Hex(canon + "|" + SALT);
+    }
 
-      // locked vs stage
-      document.getElementById('locked').style.display = ok ? "none" : "block";
-      document.getElementById('stage').style.display  = ok ? "grid" : "none";
+    (async ()=>{
+      try{
+        const t = new URLSearchParams(location.search).get("t") || "";
+        const ok = t && (t === await expectedToken());
+        // locked vs stage
+        document.getElementById('locked').style.display = ok ? "none" : "block";
+        document.getElementById('stage').style.display  = ok ? "grid" : "none";
+      }catch(e){
+        console.error(e);
+        document.getElementById('locked').textContent = "Something went wrong. Please return to the quiz 💛";
+      }
     })();
   </script>
 </body>
