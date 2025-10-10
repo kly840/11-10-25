@@ -8,52 +8,12 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/styles.css"/>
-
-  <style>
-    /* logo top-left giống index */
-    .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
-    .logo-top img{
-      height:48px; width:auto; opacity:.95;
-      transition:transform .12s ease, filter .12s ease;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,.08));
-    }
-    .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
-
-    /* dính bottom nav xuống cuối khi nội dung ít */
-    .page{ display:flex; flex-direction:column; min-height:75dvh; }
-    .spacer{ flex:1 1 auto; }
-
-    /* bottom nav đỏ, căn giữa */
-    .bottom-nav{
-      display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
-      margin-top:12px; margin-bottom:4px;
-    }
-
-    /* thẻ audio gọn đẹp */
-    .audio-card{ background:#fff; border-radius:16px; padding:16px; box-shadow:var(--shadow); margin:14px 0; }
-    .audio-card h3{ margin:0 0 8px }
-    .audio-card audio{ width:100%; margin-top:6px }
-
-    /* layout 3 ảnh */
-    .photo-row{
-      display:flex; justify-content:center; align-items:center;
-      gap:16px; margin:24px auto;
-      flex-wrap:wrap;
-    }
-    .photo-row img{
-      display:block;
-      border-radius:12px;
-      transition:transform .18s ease;
-      box-shadow:none; /* bỏ đổ bóng */
-    }
-    .photo-row img:hover{ transform:scale(1.05); }
-    .photo-row img.big{ width:clamp(200px, 30vw, 320px); }
-    .photo-row img.small{ width:clamp(120px, 20vw, 180px); }
-  </style>
 </head>
 <body>
-  <!-- 1) logo -->
-  <a href="./index.html" class="logo-top" aria-label="Home"><img src="./assets/heart_logo.png" alt="logo"></a>
+  <!-- Logo -->
+  <a href="./index.html" class="logo-top" aria-label="Home">
+    <img src="./assets/heart_logo.png" alt="logo">
+  </a>
 
   <header>
     <h1>click to listen, naan khungf</h1>
@@ -62,21 +22,17 @@
   <main class="page">
     <section class="audio-card">
       <h3>Happy Birthdayyyy my special one&lt;33</h3>
-      <audio controls>
-        <source src="./assets/hbd.m4a" type="audio/mpeg">
+      <audio controls preload="auto">
+        <!-- fix MIME type cho m4a -->
+        <source src="./assets/hbd.m4a" type="audio/mp4">
+        <source src="./assets/hbd.m4a" type="audio/x-m4a">
+        <p>Your browser does not support the audio element.</p>
       </audio>
     </section>
 
-    <!-- 2) Hàng ảnh -->
-    <div class="photo-row">
-      <img src="./assets/kly1.png" alt="kly1" class="small">
-      <img src="./assets/kly2.png" alt="kly2" class="big">
-      <img src="./assets/kly3.png" alt="kly3" class="small">
-    </div>
-
     <div class="spacer"></div>
 
-    <!-- 3) bottom nav -->
+    <!-- Nav -->
     <nav class="bottom-nav">
       <a class="btn" href="./index.html">Back Home</a>
       <a class="btn" href="./birthday-card.html">Blow the Candle</a>
@@ -85,7 +41,6 @@
     </nav>
   </main>
 
-  <!-- 4) footer -->
   <footer class="small" style="text-align:center">from kly ♡</footer>
 </body>
 </html>
