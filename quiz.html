@@ -42,30 +42,34 @@
     }
     .btn-white:hover{ background:var(--accent); color:#fff; }
 
-    /* bottom nav (đỏ, căn giữa, sát cuối trang) */
-    .spacer{ flex:1 1 auto; }
-    .bottom-nav{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:12px; margin-bottom:4px; }
-
-    /* ảnh bên phải: giữ size gốc theo khung vùng */
+    /* ảnh bên phải (không gắn link để không bypass) */
     .right-img{ display:flex; justify-content:center; align-items:center; }
     .right-img img{ max-width:100%; height:auto; border-radius:16px; box-shadow:var(--shadow); }
+
+    /* bottom nav (4 nút), sát footer */
+    .spacer{ flex:1 1 auto; }
+    .bottom-nav{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:12px; margin-bottom:4px; }
+    .btn-ghost{
+      background:#fff; color:var(--accent);
+      border:2px solid var(--accent);
+    }
   </style>
 </head>
 <body>
-  <!-- 1) Logo -->
+  <!-- Logo -->
   <a href="./index.html" class="logo-top" aria-label="Home"><img src="./assets/heart_logo.png" alt="logo"></a>
 
   <header>
     <h1>Heyyyy! Before you read my letter...</h1>
-    <!-- 3) callout to & bold -->
-    <p class="callout">you gotta answer a mini-quiz to unlock it 💡</p>
+    <p class="callout"><strong>Only opens after the quiz 💡</strong></p>
   </header>
 
   <main class="page">
     <section class="quiz-wrap">
-      <!-- 4) Column 1: chỉ giữ nút Unlock (trắng) trong khung -->
+      <!-- Column 1: quiz + nút unlock (trắng) -->
       <div class="quiz-box">
-        <form id="quiz-form">
+        <form id="quiz-form" autocomplete="off">
+          <!-- ⚠️ Nếu bạn đổi nội dung câu hỏi, đừng quên cập nhật mảng ANSWERS trong JS -->
           <label>1) Longest call we had lasted how many hours?</label>
           <input type="text" name="q1" placeholder="hint: number (just the hours only)" required>
 
@@ -80,64 +84,90 @@
         </form>
       </div>
 
-      <!-- 5) Column 2: chỉ ảnh, có link tới letter-1 (giữ nguyên size hiển thị) -->
+      <!-- Column 2: ảnh minh hoạ (không gắn link để bắt buộc qua quiz) -->
       <div class="right-img">
-        <a href="https://kly840.github.io/11-10-25/letters/letter-1.html" target="_blank" rel="noopener">
-          <img src="./assets/hello_nhan_khungf_letter.png" alt="Hello Nhan khungf">
-        </a>
+        <img src="./assets/hello_nhan_khungf_letter.png" alt="Hello Nhan khungf">
       </div>
     </section>
 
     <div class="spacer"></div>
 
-    <!-- 4) Bottom nav: Back Home – My Letter – Audio (đỏ, căn giữa, sát footer) -->
+    <!-- Bottom nav: Back Home (trắng), Audio, Blow the Candle, Memory (3 nút sau đỏ) -->
     <nav class="bottom-nav">
-      <a class="btn" href="./index.html">Back Home</a>
-      <a class="btn" href="./timeline.html">Memory</a>
+      <a class="btn btn-ghost" href="./index.html">Back Home</a>
       <a class="btn" href="./audio.html">Audio</a>
+      <a class="btn" href="./birthday-card.html">Blow the Candle</a>
+      <a class="btn" href="./timeline.html">Memory</a>
     </nav>
   </main>
 
-  <!-- 2) Footer -->
+  <!-- Footer -->
   <footer class="small" style="text-align:center">from kly ♡</footer>
 
   <!-- JS: kiểm tra đáp án → tạo token → mở thư -->
   <script>
-    // ==== CONFIG (giữ đúng với letter page) ====
+    // ==== CONFIG: CẬP NHẬT NẾU ĐÃ ĐỔI CÂU HỎI ====
+    // Nhập nhiều biến thể đúng cho mỗi câu (không phân biệt hoa/thường, bỏ ký tự thừa)
     const ANSWERS = {
-      q1: ["18","18h","18 hours"],
-      q2: ["ocean after a storm","ocean after the storm", "the ocean after a storm", "the ocean after the storm", "ocean after a big storm", "ocean after the big storm"],
-      q3: ["ong ba anh", "ông bà anh"]
+      q1: ["18","18h","18 hours"],  // ví dụ: nếu đổi câu hỏi -> cập nhật mảng này
+      q2: ["ocean after a storm","ocean after the storm","the ocean after a storm","the ocean after the storm","ocean after a big storm","ocean after the big storm"],
+      q3: ["ong ba anh","ông bà anh"]
     };
     const SALT = "kly840";
     const LETTER_URL = "./letters/letter-1.html";
 
-    // Helpers
+    // ===== Helpers =====
     function normalize(s){
-      return (s||"").toString().trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu,"");
+      return (s||"")
+        .toString()
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")                 // bỏ dấu tiếng Việt
+        .replace(/\p{Diacritic}/gu,"")   // yêu cầu trình duyệt hỗ trợ Unicode property
+        .replace(/[^\p{L}\p{N}]+/gu,""); // bỏ mọi ký tự không phải chữ/số
     }
+
+    function isAllCorrect(formData){
+      return Object.keys(ANSWERS).every(key=>{
+        const user = normalize(formData.get(key));
+        const list = ANSWERS[key] || [];
+        return list.some(ok => normalize(ok) === user);
+      });
+    }
+
     async function sha256Hex(str){
       const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
       return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
     }
-    function isAllCorrect(fd){
-      return Object.keys(ANSWERS).every(k=>{
-        const a = normalize(fd.get(k));
-        return (ANSWERS[k]||[]).some(ok=>normalize(ok)===a);
-      });
-    }
+
     async function buildCanonicalToken(){
-      const joined = Object.keys(ANSWERS).map(k=>normalize(ANSWERS[k][0])).join("|") + "|" + SALT;
+      // Ghép phương án đúng đầu tiên của từng câu (đã normalize) + SALT
+      const joined = Object.keys(ANSWERS).map(k => normalize(ANSWERS[k][0])).join("|") + "|" + SALT;
       return sha256Hex(joined);
     }
 
-    // (optional) nhỏ: confetti vui vui
-    function confetti(){ for(let i=0;i<70;i++){ const s=document.createElement('span'); s.className='confetti';
-      s.style.left=Math.random()*100+'vw'; s.style.background=`hsl(${Math.random()*360}deg 90% 60%)`;
-      s.style.animationDuration=(1.1+Math.random()*0.9)+'s'; s.style.width=(6+Math.random()*6)+'px'; s.style.height=(10+Math.random()*10)+'px';
-      document.body.appendChild(s); setTimeout(()=>s.remove(), 1800);
-    }}
+    // (optional) confetti
+    function confetti(){
+      for(let i=0;i<70;i++){
+        const s=document.createElement('span');
+        s.className='confetti';
+        s.style.position='fixed'; s.style.top='-10px';
+        s.style.width=(6+Math.random()*6)+'px';
+        s.style.height=(10+Math.random()*10)+'px';
+        s.style.left=Math.random()*100+'vw';
+        s.style.background=`hsl(${Math.random()*360}deg 90% 60%)`;
+        s.style.opacity='0.9';
+        s.style.animation='drop linear forwards';
+        s.style.animationDuration=(1.1+Math.random()*0.9)+'s';
+        document.body.appendChild(s);
+        setTimeout(()=>s.remove(), 1800);
+      }
+    }
+    const style = document.createElement('style');
+    style.textContent = '@keyframes drop{to{transform:translateY(120vh) rotate(460deg);opacity:1}}';
+    document.head.appendChild(style);
 
+    // ===== Submit handler =====
     const form = document.getElementById('quiz-form');
     const msg  = document.getElementById('msg');
 
@@ -149,9 +179,11 @@
         msg.textContent = "Nahhh, try again! You don't love me that much🙄";
         return;
       }
+
       msg.textContent = "Ghê zạ đúng rùi! Unlocking letter… 💖";
       confetti();
 
+      // Tạo token và chuyển trang
       const token = await buildCanonicalToken();
       const url = new URL(LETTER_URL, location.href);
       url.searchParams.set("t", token);
