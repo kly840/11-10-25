@@ -23,88 +23,69 @@
     .page{ display:flex; flex-direction:column; min-height:75dvh; }
     .spacer{ flex:1 1 auto; }
 
-    /* audio card */
-    .audio-card{
-      background:#fff; border-radius:16px; padding:16px;
-      box-shadow:var(--shadow, 0 8px 22px rgba(0,0,0,.08));
-      margin:14px auto; width:min(780px, 92vw);
-    }
-    .audio-card h3{ margin:0 0 8px }
-    .audio-card audio{ width:100%; margin-top:6px }
-
-    /* Photo strip: 3 ảnh 1:1, center to hơn */
-    .photo-strip{
-      width:min(980px, 94vw);
-      margin:10px auto 0;
-      display:grid;
-      grid-template-columns: 1fr 1.25fr 1fr; /* giữa to hơn */
-      gap:12px;
-    }
-    .sq{
-      position:relative; width:100%; aspect-ratio:1/1; overflow:hidden;
-      border-radius:14px; background:rgba(0,0,0,.03);
-    }
-    .sq img{
-      position:absolute; inset:0; width:100%; height:100%;
-      object-fit:cover; object-position:center; display:block; border:0;
-    }
-
-    /* bottom nav */
+    /* bottom nav đỏ, căn giữa */
     .bottom-nav{
       display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       margin-top:12px; margin-bottom:4px;
     }
-    /* Back Home: trắng – chữ đỏ */
-    .btn-ghost{
-      background:#fff; color:var(--accent, #ce2800);
-      border:2px solid var(--accent, #ce2800);
-    }
 
-    @media (max-width: 720px){
-      .photo-strip{ grid-template-columns: 1fr; }
+    /* thẻ audio gọn đẹp */
+    .audio-card{ background:#fff; border-radius:16px; padding:16px; box-shadow:var(--shadow); margin:14px 0; }
+    .audio-card h3{ margin:0 0 8px }
+    .audio-card audio{ width:100%; margin-top:6px }
+
+    /* layout 3 ảnh */
+    .photo-row{
+      display:flex; justify-content:center; align-items:center;
+      gap:16px; margin:24px auto;
+      flex-wrap:wrap;
     }
+    .photo-row img{
+      display:block;
+      border-radius:12px;
+      transition:transform .18s ease;
+      box-shadow:none; /* bỏ đổ bóng */
+    }
+    .photo-row img:hover{ transform:scale(1.05); }
+    .photo-row img.big{ width:clamp(200px, 30vw, 320px); }
+    .photo-row img.small{ width:clamp(120px, 20vw, 180px); }
   </style>
 </head>
 <body>
   <!-- 1) logo -->
-  <a href="./index.html" class="logo-top" aria-label="Home">
-    <img src="./assets/heart_logo.png" alt="logo">
-  </a>
+  <a href="./index.html" class="logo-top" aria-label="Home"><img src="./assets/heart_logo.png" alt="logo"></a>
 
   <header>
     <h1>click to listen, naan khungf</h1>
   </header>
 
   <main class="page">
-    <!-- Audio -->
     <section class="audio-card">
-      <h3>Happy Birthdayyyy my special one &lt;33</h3>
+      <h3>Happy Birthdayyyy my special one&lt;33</h3>
       <audio controls>
-        <!-- m4a là audio/mp4 -->
-        <source src="./assets/hbd.m4a" type="audio/mp4">
-        Your browser does not support the audio element.
+        <source src="./assets/hbd.m4a" type="audio/mpeg">
       </audio>
     </section>
 
-    <!-- Ảnh: kly2 ở giữa to, kly1 & kly3 hai bên nhỏ hơn, tất cả 1:1 -->
-    <section class="photo-strip">
-      <div class="sq"><img src="./assets/kly1.png" alt="kly1"></div>
-      <div class="sq"><img src="./assets/kly2.png" alt="kly2"></div>
-      <div class="sq"><img src="./assets/kly3.png" alt="kly3"></div>
-    </section>
+    <!-- 2) Hàng ảnh -->
+    <div class="photo-row">
+      <img src="./assets/kly1.png" alt="kly1" class="small">
+      <img src="./assets/kly2.png" alt="kly2" class="big">
+      <img src="./assets/kly3.png" alt="kly3" class="small">
+    </div>
 
     <div class="spacer"></div>
 
-    <!-- 4 nút: Back Home (trắng chữ đỏ), Blow the Candle, My Letter, Memory -->
+    <!-- 3) bottom nav -->
     <nav class="bottom-nav">
-      <a class="btn btn-ghost" href="./index.html">Back Home</a>
+      <a class="btn" href="./index.html">Back Home</a>
       <a class="btn" href="./birthday-card.html">Blow the Candle</a>
-      <a class="btn" href="./quiz.html">My Letter</a>
+      <a class="btn" href="./quiz.html">My letter</a>
       <a class="btn" href="./timeline.html">Memory</a>
     </nav>
   </main>
 
-  <!-- 2) footer -->
+  <!-- 4) footer -->
   <footer class="small" style="text-align:center">from kly ♡</footer>
 </body>
 </html>
