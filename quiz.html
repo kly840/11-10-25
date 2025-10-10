@@ -66,14 +66,14 @@
       <!-- 4) Column 1: chỉ giữ nút Unlock (trắng) trong khung -->
       <div class="quiz-box">
         <form id="quiz-form">
-          <label>1) Our first call ended at what time?</label>
-          <input type="text" name="q1" placeholder="e.g., 02:13 AM" required>
+          <label>1) Longest call we had lasted how many hours?</label>
+          <input type="text" name="q1" placeholder="hint: number (just the hours only)" required>
 
-          <label>2) Where did we see the broken umbrella?</label>
-          <input type="text" name="q2" placeholder="place" required>
+          <label>2) What color or image did you once compare my eyes to?</label>
+          <input type="text" name="q2" placeholder="hint: 4-5 words (it's not an actual color)" required>
 
-          <label>3) The safe-word on our first trip?</label>
-          <input type="text" name="q3" placeholder="word" required>
+          <label>3) Which song did you imagine us being in, the one that you came up with?</label>
+          <input type="text" name="q3" placeholder="3 words" required>
 
           <button type="submit" class="btn-white" style="margin-top:16px;">unlock my letter ^^</button>
           <p id="msg" class="small" style="margin-top:6px;"></p>
@@ -105,9 +105,9 @@
   <script>
     // ==== CONFIG (giữ đúng với letter page) ====
     const ANSWERS = {
-      q1: ["2:13 am","02:13 am","0213"],
-      q2: ["bus stop","at the bus stop"],
-      q3: ["pineapple"]
+      q1: ["18","18h","18 hours"],
+      q2: ["ocean after a storm","ocean after the storm", "the ocean after a storm", "the ocean after the storm", "ocean after a big storm", "ocean after the big storm"],
+      q3: ["ong ba anh", "ông bà anh"]
     };
     const SALT = "kly840";
     const LETTER_URL = "./letters/letter-1.html";
