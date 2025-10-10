@@ -10,14 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* ===== Theme (tối giản, tự chứa) ===== */
     :root{
       --bg: #fff5e7;
       --text: #590202;
       --accent: #ce2800;
-      --balloon-size: clamp(120px, 13vw, 160px);  /* kích thước mỗi bóng */
-      --balloon-gap: clamp(22px, 6vw, 64px);      /* giãn NGANG giữa bóng */
-      --balloon-shift-y: -48px;                   /* kéo cụm bóng lên gần brand (âm = đi lên) */
+
+      /* điều chỉnh nhanh kích thước & khoảng cách cụm brand */
+      --side-size: clamp(100px, 12vw, 170px);     /* size 4 ảnh hai bên (đã phóng to) */
+      --stack-gap: clamp(8px, 2.4vw, 18px);       /* khoảng cách giữa 2 ảnh trong mỗi bên */
+      --brand-gap: clamp(22px, 5vw, 56px);        /* khoảng cách 2 bên với ảnh giữa (không chạm) */
+
+      --balloon-size: clamp(120px, 13vw, 160px);
+      --balloon-gap: clamp(22px, 6vw, 64px);
+      --balloon-shift-y: -48px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -30,7 +35,7 @@
     a{color:var(--accent); text-decoration:none}
     a:hover{text-decoration:underline}
 
-    /* ==== Logo top-left (hover scale) ==== */
+    /* Logo top-left */
     .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
     .logo-top img{
       height:48px; width:auto; opacity:.95;
@@ -42,15 +47,15 @@
       filter: drop-shadow(0 6px 14px rgba(0,0,0,.16));
     }
 
-    /* ==== Hero layout ==== */
+    /* Hero layout */
     .hero{
       min-height:80dvh;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      text-align:center; gap:8px; /* sát nhau theo yêu cầu */
+      display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+      text-align:center; gap:8px;
       padding:0 16px;
     }
 
-    /* ==== Buttons (đỏ, bo 25px) ==== */
+    /* Buttons */
     .btn{
       display:inline-block; background:var(--accent); color:#fff; border:0;
       padding:10px 18px; border-radius:25px; font-weight:700; cursor:pointer;
@@ -58,125 +63,92 @@
       box-shadow:0 8px 24px rgba(0,0,0,.12);
     }
     .btn:hover{ transform:translateY(-1px); box-shadow:0 12px 30px rgba(0,0,0,.18) }
-
     .cta-row{
       display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
       margin-top:4px; margin-bottom:2px;
     }
 
-    /* ==== Ảnh brand lớn + 4 ảnh hai bên ==== */
-    .brand-wrap{
-      position:relative;
-      margin:6px auto 0;              /* rất gần balloons */
-      width:clamp(260px, 32vw, 500px);
-    }
+    /* Ảnh brand lớn */
     .hero-brand{
-      width:100%;
-      height:auto;
+      width:clamp(260px, 32vw, 500px);
+      height:auto; margin:6px auto;
       transition:transform .12s ease, filter .12s ease;
       filter: drop-shadow(0 10px 22px rgba(0,0,0,.08));
-      display:block;
     }
     .hero-brand:hover{
       transform:scale(1.04);
       filter: drop-shadow(0 16px 28px rgba(0,0,0,.14));
     }
-    /* Ảnh nhỏ hai bên */
-    .side-img{
-      position:absolute;
-      width:clamp(56px, 9vw, 90px);     /* nhỏ hơn brand */
-      aspect-ratio:1/1;
-      border-radius:12px;
+
+    /* ======= CỤM BRAND + 4 ẢNH HAI BÊN ======= */
+    .brand-cluster{
+      display:grid;
+      grid-template-columns: auto minmax(260px, 34vw) auto; /* trái – brand – phải */
+      column-gap: var(--brand-gap);
+      align-items:center;
+      justify-content:center;
+      margin-top:6px;
+      width:min(1100px, 96vw);
+    }
+    .side-stack{
+      display:flex; flex-direction:column; gap: var(--stack-gap);
+      align-items:center; justify-content:center;
+    }
+    .side-pic{
+      width: var(--side-size);
+      aspect-ratio: 1 / 1;
       overflow:hidden;
-      transition:transform .12s ease, box-shadow .12s ease;
-      box-shadow:0 8px 22px rgba(0,0,0,.08);
-      background:#fff;
+      border-radius:12px;
+      /* Không khung/đổ bóng/nền */
+      background: transparent; border: none; box-shadow: none;
+      transition: transform .15s ease;
     }
-    .side-img img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .side-img:hover{ transform:scale(1.06); box-shadow:0 12px 30px rgba(0,0,0,.16) }
-
-    /* Vị trí 4 ảnh quanh brand */
-    .left-top   { left: -10%; top:  6%; }
-    .left-bot   { left: -12%; bottom: -6%; }
-    .right-top  { right:-10%; top:  6%; }
-    .right-bot  { right:-12%; bottom: -6%; }
-
-    /* co vị trí khi màn nhỏ để không tràn */
-    @media (max-width:680px){
-      .left-top{ left:-6% } .left-bot{ left:-7% }
-      .right-top{ right:-6% } .right-bot{ right:-7% }
+    .side-pic img{
+      width:100%; height:100%;
+      object-fit: cover; object-position: center;
+      display:block; border:0;
     }
-    @media (max-width:480px){
-      .side-img{ display:none; } /* quá hẹp thì ẩn ảnh phụ để gọn */
+    .side-pic:hover{ transform: scale(1.06); }
+
+    @media (max-width: 680px){
+      /* khi màn hẹp, thu nhỏ chút để tránh chạm brand */
+      :root{ --side-size: clamp(92px, 22vw, 130px); --brand-gap: clamp(18px, 5vw, 40px); }
     }
 
-    /* ==== Dãy balloons: GRID 5 cột ==== */
+    /* ==== Balloons (giữ nguyên) ==== */
     .balloon-row{
       display:grid;
       grid-template-columns: repeat(5, var(--balloon-size));
       column-gap: var(--balloon-gap);
-      justify-content:center;       /* cụm nằm giữa */
-      transform: translateY(var(--balloon-shift-y)); /* kéo lên gần brand */
-      margin: 0 auto 6px;
+      justify-content:center;
+      transform: translateY(var(--balloon-shift-y));
+      margin: 2px auto 6px;
       width: min(1100px, 94vw);
-      pointer-events:none; /* không bắt chuột trên ảnh bóng */
+      pointer-events:none;
     }
-    .balloon{
-      height: var(--balloon-size);
-      display:flex; align-items:flex-end; justify-content:center;
-      opacity:0;
-      animation: fadeIn .7s ease forwards;
-      will-change: transform, opacity;
-    }
-    .balloon img{
-      width: var(--balloon-size);
-      height:auto;
-      border-radius:12px;
-      box-shadow:none !important;     /* theo yêu cầu: không shadow */
-      animation: float 3.8s ease-in-out 1s infinite; /* lượn */
-      will-change: transform;
-    }
-    /* Stagger xuất hiện cho tự nhiên */
-    .balloon:nth-child(1){ animation-delay:.10s }
-    .balloon:nth-child(2){ animation-delay:.28s }
-    .balloon:nth-child(3){ animation-delay:.46s }
-    .balloon:nth-child(4){ animation-delay:.64s }
+    .balloon{ height: var(--balloon-size); display:flex; align-items:flex-end; justify-content:center; opacity:0; animation: fadeIn .7s ease forwards; }
+    .balloon img{ width: var(--balloon-size); height:auto; border-radius:12px; box-shadow:none !important; animation: float 3.8s ease-in-out 1s infinite; }
+    .balloon:nth-child(1){ animation-delay:.10s } .balloon:nth-child(2){ animation-delay:.28s }
+    .balloon:nth-child(3){ animation-delay:.46s } .balloon:nth-child(4){ animation-delay:.64s }
     .balloon:nth-child(5){ animation-delay:.82s }
+    @media (max-width: 800px){ .balloon-row{ grid-template-columns: repeat(3, var(--balloon-size)); row-gap: var(--balloon-gap); } }
+    @media (max-width: 520px){ .balloon-row{ grid-template-columns: repeat(2, var(--balloon-size)); } }
+    @keyframes fadeIn{ from{ transform:translateY(18px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
+    @keyframes float{ 0%{transform:translateY(0)} 50%{transform:translateY(10px)} 100%{transform:translateY(0)} }
 
-    /* Responsive: 3-2 cột khi màn hẹp, vẫn giãn ngang */
-    @media (max-width: 800px){
-      .balloon-row{ grid-template-columns: repeat(3, var(--balloon-size)); row-gap: var(--balloon-gap); }
-    }
-    @media (max-width: 520px){
-      .balloon-row{ grid-template-columns: repeat(2, var(--balloon-size)); }
-    }
-
-    /* Keyframes */
-    @keyframes fadeIn{
-      from{ transform:translateY(18px); opacity:0 }
-      to  { transform:translateY(0);   opacity:1 }
-    }
-    @keyframes float{
-      0%  { transform:translateY(0) }
-      50% { transform:translateY(10px) }
-      100%{ transform:translateY(0) }
-    }
-
-    /* Footer */
     footer{ margin:24px auto 40px; text-align:center; font-size:13px; color:#7c3d2f; }
   </style>
 </head>
 <body>
-  <!-- Logo top-left (link về home + hover scale) -->
+  <!-- Logo -->
   <a href="./index.html" class="logo-top" aria-label="Home">
     <img src="./assets/heart_logo.png" alt="logo">
   </a>
 
   <main class="hero">
-    <!-- H1 -->
     <h1>happi birthday naan. are you ready? ✨</h1>
 
-    <!-- 4 nút đỏ ngay dưới H1: Memory, Audio, Blow the Candle, My Letter -->
+    <!-- 4 nút -->
     <div class="cta-row">
       <a class="btn" href="./timeline.html">Memory</a>
       <a class="btn" href="./audio.html">Audio</a>
@@ -184,21 +156,25 @@
       <a class="btn" href="./quiz.html">My Letter</a>
     </div>
 
-    <!-- Ảnh brand lớn giữa + 4 ảnh phụ hai bên -->
-    <div class="brand-wrap">
-      <!-- ảnh phụ trái -->
-      <span class="side-img left-top"><img src="./assets/kly2.png" alt="kly2"></span>
-      <span class="side-img left-bot"><img src="./assets/kly1.png" alt="kly1"></span>
+    <!-- Cụm brand + 4 ảnh hai bên -->
+    <section class="brand-cluster" aria-label="brand and side images">
+      <!-- BÊN TRÁI: kly2 (trên), kly1 (dưới) -->
+      <div class="side-stack">
+        <figure class="side-pic"><img src="./assets/kly2.png" alt="kly2"></figure>
+        <figure class="side-pic"><img src="./assets/kly1.png" alt="kly1"></figure>
+      </div>
 
-      <!-- brand -->
+      <!-- Ảnh brand giữa -->
       <img src="./assets/heart_logo_text.png" alt="heart brand" class="hero-brand">
 
-      <!-- ảnh phụ phải -->
-      <span class="side-img right-top"><img src="./assets/nhan1.png" alt="nhan1"></span>
-      <span class="side-img right-bot"><img src="./assets/kly3.png" alt="kly3"></span>
-    </div>
+      <!-- BÊN PHẢI: nhan1 (trên), kly3 (dưới) -->
+      <div class="side-stack">
+        <figure class="side-pic"><img src="./assets/nhan1.png" alt="nhan1"></figure>
+        <figure class="side-pic"><img src="./assets/kly3.png" alt="kly3"></figure>
+      </div>
+    </section>
 
-    <!-- Dãy balloons n1..n5 (grid giãn ngang + animation, không shadow) -->
+    <!-- Balloons dưới -->
     <div class="balloon-row" aria-label="balloons">
       <div class="balloon"><img src="./assets/n1.png" alt="balloon 1"></div>
       <div class="balloon"><img src="./assets/n2.png" alt="balloon 2"></div>
