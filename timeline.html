@@ -23,7 +23,7 @@
     /* Trang chính: để bottom-nav dính gần footer khi nội dung ít */
     .page{ display:flex; flex-direction:column; min-height:75dvh; }
 
-    /* Callout to form: to/đậm (giữ màu từ styles.css) */
+    /* Callout to form (giữ màu từ styles.css) */
     .callout{
       font-weight:800;
       font-size:clamp(18px,3.2vw,26px);
@@ -85,6 +85,11 @@
       display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       margin-top:12px; margin-bottom:4px;
     }
+    /* Kiểu nút trắng-chữ đỏ cho Back Home (giống các trang khác) */
+    .btn-ghost{
+      background:#fff; color:var(--accent, #ce2800);
+      border:2px solid var(--accent, #ce2800);
+    }
   </style>
 </head>
 <body>
@@ -109,11 +114,12 @@
 
     <div class="spacer"></div>
 
-    <!-- Bottom nav giống index/timeline -->
+    <!-- Bottom nav: 4 nút, sát footer, đúng thứ tự & màu -->
     <nav class="bottom-nav">
-      <a class="btn" href="./index.html">Back Home</a>
-      <a class="btn" href="./quiz.html">My letter</a>
+      <a class="btn btn-ghost" href="./index.html">Back Home</a>
       <a class="btn" href="./audio.html">Audio</a>
+      <a class="btn" href="./quiz.html">My Letter</a>
+      <a class="btn" href="./birthday-card.html">Blow the Candle</a>
     </nav>
   </main>
 
