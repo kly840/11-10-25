@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./assets/styles.css"/>
 
   <style>
-    /* logo top-left (giống index) */
+    /* logo top-left */
     .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
     .logo-top img{
       height:48px; width:auto; opacity:.95;
@@ -19,11 +19,11 @@
     }
     .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
-    /* bố cục để nav luôn sát đáy khi nội dung ít */
+    /* page layout */
     .page{ display:flex; flex-direction:column; min-height:75dvh; }
     .spacer{ flex:1 1 auto; }
 
-    /* thẻ audio gọn đẹp */
+    /* audio card */
     .audio-card{
       background:#fff; border-radius:16px; padding:16px;
       box-shadow:var(--shadow, 0 8px 22px rgba(0,0,0,.08));
@@ -32,35 +32,37 @@
     .audio-card h3{ margin:0 0 8px }
     .audio-card audio{ width:100%; margin-top:6px }
 
-    /* hàng ảnh dưới audio */
+    /* photo row: 3 ảnh cùng size */
     .photo-row{
       width:min(980px, 94vw);
       margin:12px auto 0;
       display:grid;
-      grid-template-columns: 1fr 1.25fr 1fr; /* giữa to hơn */
-      gap:12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
     }
     .sq{
-      position:relative; width:100%; aspect-ratio:1/1; overflow:hidden;
-      border-radius:14px; background:rgba(0,0,0,.03);
-      box-shadow:none; /* bỏ đổ bóng */
+      position:relative; width:100%; aspect-ratio:1/1;
+      overflow:hidden; border-radius:14px;
+      background:rgba(0,0,0,.03);
       transition:transform .18s ease;
     }
-    .sq:hover{ transform:scale(1.05); } /* hover effect */
+    .sq:hover{ transform:scale(1.05); }
     .sq img{
       position:absolute; inset:0; width:100%; height:100%;
-      object-fit:cover; object-position:center; display:block; border:0;
+      object-fit:cover; object-position:center;
+      display:block; border:0;
+      box-shadow:none; /* bỏ đổ bóng */
     }
     @media (max-width: 720px){
       .photo-row{ grid-template-columns: 1fr; }
     }
 
-    /* bottom nav: 4 nút, căn giữa, sát footer */
+    /* bottom nav */
     .bottom-nav{
       display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       margin-top:12px; margin-bottom:4px;
     }
-    /* Back Home: trắng chữ đỏ (ghost) */
+    /* Back Home: trắng chữ đỏ */
     .btn-ghost{
       background:#fff; color:var(--accent, #ce2800);
       border:2px solid var(--accent, #ce2800);
@@ -78,21 +80,17 @@
   </header>
 
   <main class="page">
-    <!-- Audio -->
+    <!-- audio -->
     <section class="audio-card">
       <h3>Happy Birthdayyyy my special one &lt;33</h3>
       <audio controls preload="auto">
-        <!-- đúng MIME cho .m4a -->
         <source src="./assets/hbd.m4a" type="audio/mp4">
         <source src="./assets/hbd.m4a" type="audio/x-m4a">
-        <!-- (tuỳ chọn) nếu có hbd.mp3, thêm dòng dưới để fallback:
-        <source src="./assets/hbd.mp3" type="audio/mpeg">
-        -->
         <p>Your browser does not support the audio element.</p>
       </audio>
     </section>
 
-    <!-- 3 ảnh: kly2 giữa to, kly1 & kly3 hai bên nhỏ; 1:1 + hover + no shadow -->
+    <!-- 3 ảnh same size -->
     <section class="photo-row">
       <div class="sq"><img src="./assets/kly1.png" alt="kly1"></div>
       <div class="sq"><img src="./assets/kly2.png" alt="kly2"></div>
@@ -101,7 +99,7 @@
 
     <div class="spacer"></div>
 
-    <!-- 4 nút: Back Home (trắng), Blow the Candle, My Letter, Memory -->
+    <!-- 4 nút -->
     <nav class="bottom-nav">
       <a class="btn btn-ghost" href="./index.html">Back Home</a>
       <a class="btn" href="./birthday-card.html">Blow the Candle</a>
