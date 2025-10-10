@@ -10,16 +10,12 @@
   <link rel="stylesheet" href="./assets/styles.css"/>
 
   <style>
-    :root{
-      --bg:#fff5e7;
-      --text:#590202;
-      --accent:#ce2800;
-    }
-    body{ background:var(--bg); color:var(--text); margin:0; font:16px/1.6 "Montserrat", ui-sans-serif; }
+    :root{ --bg:#fff5e7; --text:#590202; --accent:#ce2800; }
+    body{ background:var(--bg); color:var(--text); margin:0; font:16px/1.6 "Montserrat",ui-sans-serif; }
 
     /* logo top-left */
     .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
-    .logo-top img{ height:48px; width:auto; opacity:.95; transition:transform .12s ease, filter .12s ease; filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
+    .logo-top img{ height:48px; width:auto; opacity:.95; transition:transform .12s, filter .12s; filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
     .logo-top:hover img{ transform:scale(1.06); filter:drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
     header{ text-align:center; padding-top:48px; }
@@ -29,44 +25,47 @@
     /* Sân khấu: ảnh trái – bánh – ảnh phải */
     .stage{
       display:flex; align-items:center; justify-content:center;
-      gap:clamp(18px, 6vw, 56px);         /* khoảng cách bảo đảm không chạm bánh */
-      margin:20px auto 16px;
-      width:min(980px, 94vw);
+      gap:clamp(18px, 6vw, 56px);
+      margin:20px auto 16px; width:min(980px, 94vw);
     }
 
-    /* Ảnh hai bên: to hơn, không khung, không nền, không bóng, chỉ hover scale */
-    .side-pic{
-      width:clamp(120px, 18vw, 220px);   /* TO HƠN — cân đối 2 bên */
-      aspect-ratio:1/1;
-      border:none; outline:none; background:transparent; box-shadow:none;
-      overflow:hidden; border-radius:12px; /* nếu muốn cạnh vuông: đổi thành 0 */
-      transition:transform .15s ease;
-    }
-    .side-pic img{
-      width:100%; height:100%; object-fit:cover; object-position:center; display:block;
-    }
-    .side-pic:hover{ transform:scale(1.06); }
-
-    /* Bánh & nến giữa (giữ layout cũ) */
-    .cake-wrap{ position:relative; width:clamp(220px, 26vw, 320px); height:auto; }
+    /* Bánh & nến: tạo stacking-order rõ ràng */
+    .cake-wrap{ position:relative; width:clamp(260px, 28vw, 360px); height:180px; }
     .cake-base{
+      position:relative; /* để z-index có hiệu lực */
+      z-index:2;         /* CAKE ở TRÊN thân nến */
       width:100%; height:120px; margin-top:58px;
       background:#f5d3c7; border-radius:16px; border:2px solid rgba(206,40,0,.18);
     }
-    .candle{ position:absolute; left:50%; transform:translateX(-50%); top:0; width:14px; height:140px; background:#fff; border-radius:7px; border:2px solid rgba(206,40,0,.18); }
+    .candle{
+      position:absolute; left:50%; transform:translateX(-50%);
+      top:8px; width:14px; height:140px; border-radius:7px;
+      background:#fff; border:2px solid rgba(206,40,0,.18);
+      z-index:1;         /* CANDLE ở DƯỚI cake */
+    }
     .flame{
-      position:absolute; left:50%; transform:translateX(-50%); top:-24px;
+      position:absolute; left:50%; transform:translateX(-50%); top:-10px;
       width:22px; height:34px; border-radius:50% 50% 45% 45%;
       background:radial-gradient(ellipse at 50% 65%, #ffd36c 0%, #ff9c2b 55%, rgba(255,156,43,.0) 66%),
                  radial-gradient(ellipse at 50% 35%, #ffe39c 0%, rgba(255,227,156,.0) 70%);
       animation:flicker .9s infinite ease-in-out;
-      cursor:pointer;
+      cursor:pointer; z-index:3; /* FLAME ở TRÊN hết */
     }
+    .flame.off{ display:none; }
     @keyframes flicker{
       0%,100%{ transform:translateX(-50%) scale(1); filter:blur(0px); }
       50%    { transform:translateX(-50%) scale(1.06); filter:blur(.2px); }
     }
-    .flame.off{ display:none; }
+
+    /* Ảnh hai bên: nhỏ hơn bánh một chút, không khung/bóng */
+    .side-pic{
+      width:clamp(120px, 16vw, 200px);   /* < cake-wrap max 360 → nhỏ hơn bánh */
+      aspect-ratio:1/1; overflow:hidden; border-radius:12px;
+      background:transparent; border:none; box-shadow:none;
+      transition:transform .15s ease;
+    }
+    .side-pic img{ width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
+    .side-pic:hover{ transform:scale(1.06); }
 
     .wish{ text-align:center; font-weight:700; margin:14px 0 28px; }
 
@@ -89,22 +88,18 @@
 
   <!-- Ảnh trái – bánh – ảnh phải -->
   <section class="stage">
-    <!-- Ảnh TRÁI: kly2 -->
-    <figure class="side-pic">
-      <img src="./assets/kly2.png" alt="kly2">
-    </figure>
+    <!-- Trái: kly2 -->
+    <figure class="side-pic"><img src="./assets/kly2.png" alt="kly2"></figure>
 
-    <!-- Bánh & nến ở giữa -->
+    <!-- Bánh & nến ở giữa (đã chỉnh layer) -->
     <div class="cake-wrap">
       <div id="flame" class="flame" title="tap to blow"></div>
       <div class="candle"></div>
       <div class="cake-base"></div>
     </div>
 
-    <!-- Ảnh PHẢI: nhan1 -->
-    <figure class="side-pic">
-      <img src="./assets/nhan1.png" alt="nhan1">
-    </figure>
+    <!-- Phải: nhan1 -->
+    <figure class="side-pic"><img src="./assets/nhan1.png" alt="nhan1"></figure>
   </section>
 
   <p id="wish" class="wish">Happi birthday, my naan 💛 Close your eyes, make a wish, and blow</p>
@@ -120,7 +115,6 @@
   <footer>from kly ♡</footer>
 
   <script>
-    // Tắt nến khi click (hoặc sau khi detect blow — nếu bạn đã có mic code)
     const flame = document.getElementById('flame');
     const wish  = document.getElementById('wish');
     function extinguish(){
@@ -129,7 +123,7 @@
       wish.textContent = "Yeyyyy my babi, no matter what happened, I’m always be by your side";
     }
     flame.addEventListener('click', extinguish);
-    // (Nếu có listener microphone thổi nến, chỉ cần gọi extinguish() khi detect)
+    // Nếu có mic-detect, chỉ cần gọi extinguish() khi phát hiện thổi.
   </script>
 </body>
 </html>
