@@ -1,231 +1,135 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>blow the candle 🎂</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#fff5e7; --text:#590202; --accent:#ce2800;
-    --btn-radius:25px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; background:var(--bg); color:var(--text);
-    font:16px/1.6 "Montserrat",ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  }
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/>
+  <title>blow the candle 🎂</title>
 
-  /* Logo top-left (giống index) */
-  .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
-  .logo-top img{ height:48px; width:auto; opacity:.95; transition:transform .12s ease, filter .12s ease;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
-  .logo-top:hover img{ transform:scale(1.06); filter: drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/styles.css"/>
 
-  /* Layout đẩy nav xuống đáy */
-  .page{ min-height:100dvh; display:flex; flex-direction:column; }
-  main{ flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:18px }
-  .card{ width:min(720px,92vw); text-align:center; }
+  <style>
+    :root{
+      --bg:#fff5e7;
+      --text:#590202;
+      --accent:#ce2800;
+    }
+    body{ background:var(--bg); color:var(--text); margin:0; font:16px/1.6 "Montserrat", ui-sans-serif; }
 
-  h1{font-size:40px; margin:10px 0 6px; color:var(--accent)}
-  .subtitle{opacity:.85; margin:0 0 10px}
+    /* logo top-left */
+    .logo-top{ position:absolute; top:18px; left:18px; display:inline-block; }
+    .logo-top img{ height:48px; width:auto; opacity:.95; transition:transform .12s ease, filter .12s ease; filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
+    .logo-top:hover img{ transform:scale(1.06); filter:drop-shadow(0 6px 14px rgba(0,0,0,.16)); }
 
-  /* Sân khấu nến + bánh */
-  .stage{
-    position:relative; margin:6px auto 10px; width:260px; height:340px;
-    display:flex; align-items:center; justify-content:center; flex-direction:column;
-  }
-  .cake{
-    position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
-    width:220px; height:90px; background:#ffd5c0; border-radius:12px;
-    box-shadow:0 8px 22px rgba(0,0,0,.08) inset;
-  }
-  .cake:before{
-    content:""; position:absolute; inset:6px; border-radius:10px; background:#ffe9df;
-  }
-  .candle{
-    position:absolute; bottom:125px; left:50%; transform:translateX(-50%);
-    width:18px; height:100px; background:#f4faff; border-radius:9px;
-    box-shadow:0 2px 0 rgba(0,0,0,.05) inset;
-    display:flex; align-items:flex-start; justify-content:center;
-    cursor:pointer; /* tap to blow */
-  }
-  .wick{ width:3px; height:18px; background:#2b2b2b; margin-top:-10px; border-radius:2px; }
-  .flame{
-    position:absolute; top:-28px; width:22px; height:34px; left:50%; transform:translateX(-50%);
-    background:radial-gradient(ellipse at center, #fff6a9 0%, #ffd86e 35%, #ff9c2d 60%, rgba(255,152,0,0.2) 100%);
-    border-radius:50% 50% 60% 60%;
-    filter: blur(0.2px);
-    animation: flicker 0.09s infinite alternate ease-in-out;
-    transform-origin:50% 100%;
-  }
-  @keyframes flicker{
-    from{ transform:translateX(-50%) scale(1) rotate(-2deg); box-shadow:0 -6px 22px rgba(255,187,0,.7) }
-    to  { transform:translateX(-50%) scale(1.04) rotate(2deg); box-shadow:0 -10px 28px rgba(255,190,0,.9) }
-  }
+    header{ text-align:center; padding-top:48px; }
+    h1{ color:var(--accent); margin:0 0 6px; font-size:clamp(28px,4.2vw,44px); }
+    .subtitle{ opacity:.9; margin:0 0 22px; }
 
-  /* Ảnh 2 bên bánh */
-  .side{
-    position:absolute; bottom:70px; width:110px; aspect-ratio:1/1;
-    border-radius:12px; overflow:hidden; background:#fff; 
-    transition:transform .12s ease, box-shadow .12s ease;
-    box-shadow:0 8px 22px rgba(0,0,0,.08);
-  }
-  .side img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .side:hover{ transform:scale(1.05); box-shadow:0 12px 30px rgba(0,0,0,.16) }
-  .side-left{ left:-80px; }   /* lệch trái sân khấu */
-  .side-right{ right:-80px; } /* lệch phải sân khấu */
+    /* Sân khấu: ảnh trái – bánh – ảnh phải */
+    .stage{
+      display:flex; align-items:center; justify-content:center;
+      gap:clamp(18px, 6vw, 56px);         /* khoảng cách bảo đảm không chạm bánh */
+      margin:20px auto 16px;
+      width:min(980px, 94vw);
+    }
 
-  /* Hộp message: cùng 1 vị trí trước & sau khi thổi */
-  .wish{ margin-top:12px; }
-  .wish p{ margin:0; font-weight:700; } /* cùng kích thước cho cả 2 trạng thái */
+    /* Ảnh hai bên: to hơn, không khung, không nền, không bóng, chỉ hover scale */
+    .side-pic{
+      width:clamp(120px, 18vw, 220px);   /* TO HƠN — cân đối 2 bên */
+      aspect-ratio:1/1;
+      border:none; outline:none; background:transparent; box-shadow:none;
+      overflow:hidden; border-radius:12px; /* nếu muốn cạnh vuông: đổi thành 0 */
+      transition:transform .15s ease;
+    }
+    .side-pic img{
+      width:100%; height:100%; object-fit:cover; object-position:center; display:block;
+    }
+    .side-pic:hover{ transform:scale(1.06); }
 
-  /* Bottom nav (4 nút sát footer) */
-  .bottom-nav{
-    display:flex; justify-content:center; gap:12px; flex-wrap:wrap;
-    margin: 6px 0 6px;
-  }
-  .btn{
-    display:inline-block; background:var(--accent); color:#fff; border:0;
-    padding:10px 18px; border-radius:var(--btn-radius); font-weight:700; cursor:pointer;
-    transition:transform .12s ease, box-shadow .12s ease; box-shadow:0 8px 24px rgba(0,0,0,.12);
-    text-decoration:none;
-  }
-  .btn:hover{ transform:translateY(-1px); box-shadow:0 12px 30px rgba(0,0,0,.18)}
-  .btn-ghost{ background:#fff; color:var(--accent); border:2px solid var(--accent) }
+    /* Bánh & nến giữa (giữ layout cũ) */
+    .cake-wrap{ position:relative; width:clamp(220px, 26vw, 320px); height:auto; }
+    .cake-base{
+      width:100%; height:120px; margin-top:58px;
+      background:#f5d3c7; border-radius:16px; border:2px solid rgba(206,40,0,.18);
+    }
+    .candle{ position:absolute; left:50%; transform:translateX(-50%); top:0; width:14px; height:140px; background:#fff; border-radius:7px; border:2px solid rgba(206,40,0,.18); }
+    .flame{
+      position:absolute; left:50%; transform:translateX(-50%); top:-24px;
+      width:22px; height:34px; border-radius:50% 50% 45% 45%;
+      background:radial-gradient(ellipse at 50% 65%, #ffd36c 0%, #ff9c2b 55%, rgba(255,156,43,.0) 66%),
+                 radial-gradient(ellipse at 50% 35%, #ffe39c 0%, rgba(255,227,156,.0) 70%);
+      animation:flicker .9s infinite ease-in-out;
+      cursor:pointer;
+    }
+    @keyframes flicker{
+      0%,100%{ transform:translateX(-50%) scale(1); filter:blur(0px); }
+      50%    { transform:translateX(-50%) scale(1.06); filter:blur(.2px); }
+    }
+    .flame.off{ display:none; }
 
-  /* Confetti */
-  .confetti{ position:fixed; top:-10px; width:8px; height:14px; opacity:.9;
-    animation: drop linear forwards; }
-  @keyframes drop{ to{ transform:translateY(120vh) rotate(460deg); opacity:1 } }
+    .wish{ text-align:center; font-weight:700; margin:14px 0 28px; }
 
-  footer{ margin:8px auto 16px; text-align:center; font-size:13px; color:#7c3d2f; }
+    /* Nút cuối trang */
+    .bottom-nav{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:10px; margin-bottom:4px; }
+    .btn{ display:inline-block; background:var(--accent); color:#fff; border:0; padding:10px 18px; border-radius:25px; font-weight:700; text-decoration:none; }
+    .btn-ghost{ background:#fff; color:var(--accent); border:2px solid var(--accent); }
 
-  /* Responsive */
-  @media (max-width:520px){
-    h1{font-size:32px}
-    .stage{width:240px; height:320px}
-    .cake{width:200px}
-    .side{ width:90px; bottom:68px; }
-    .side-left{ left:-60px; }
-    .side-right{ right:-60px; }
-  }
-  @media (max-width:400px){
-    .side{ display:none; } /* quá hẹp thì ẩn 2 ảnh bên để không chật */
-  }
-</style>
+    footer{ text-align:center; margin:12px 0 28px; color:#7c3d2f; font-size:13px; }
+  </style>
 </head>
 <body>
+  <!-- logo -->
+  <a class="logo-top" href="./index.html" aria-label="Home"><img src="./assets/heart_logo.png" alt="logo"></a>
 
-  <!-- Logo như index -->
-  <a href="./index.html" class="logo-top" aria-label="Home">
-    <img src="./assets/heart_logo.png" alt="logo">
-  </a>
+  <header>
+    <h1>blow the candle 🎂</h1>
+    <p class="subtitle">blow towards your mic… or tap the flame</p>
+  </header>
 
-  <div class="page">
-    <main>
-      <div class="card">
-        <h1>blow the candle 🎂</h1>
-        <p class="subtitle">blow towards your mic… or tap the flame</p>
+  <!-- Ảnh trái – bánh – ảnh phải -->
+  <section class="stage">
+    <!-- Ảnh TRÁI: kly2 -->
+    <figure class="side-pic">
+      <img src="./assets/kly2.png" alt="kly2">
+    </figure>
 
-        <div class="stage" id="stage">
-          <!-- Ảnh hai bên bánh -->
-          <div class="side side-left"><img src="./assets/kly2.png" alt="kly2"></div>
-          <div class="side side-right"><img src="./assets/nhan1.png" alt="nhan1"></div>
+    <!-- Bánh & nến ở giữa -->
+    <div class="cake-wrap">
+      <div id="flame" class="flame" title="tap to blow"></div>
+      <div class="candle"></div>
+      <div class="cake-base"></div>
+    </div>
 
-          <!-- Cây nến + bánh -->
-          <div class="candle" id="candle" title="Tap to blow">
-            <div class="flame" id="flame"></div>
-            <div class="wick"></div>
-          </div>
-          <div class="cake"></div>
-        </div>
+    <!-- Ảnh PHẢI: nhan1 -->
+    <figure class="side-pic">
+      <img src="./assets/nhan1.png" alt="nhan1">
+    </figure>
+  </section>
 
-        <!-- Message: cùng một vị trí, cùng size trước & sau khi thổi -->
-        <section class="wish" id="wish">
-          <p id="message">Happi birthday, my naan 💛 Close your eyes, make a wish, and blow</p>
-        </section>
-      </div>
-    </main>
+  <p id="wish" class="wish">Happi birthday, my naan 💛 Close your eyes, make a wish, and blow</p>
 
-    <!-- 4 nút cuối trang -->
-    <nav class="bottom-nav">
-      <a class="btn btn-ghost" href="./index.html">Back Home</a>
-      <a class="btn" href="./timeline.html">Memory</a>
-      <a class="btn" href="./audio.html">Audio</a>
-      <a class="btn" href="./quiz.html">My Letter</a>
-    </nav>
+  <!-- Nav -->
+  <nav class="bottom-nav">
+    <a class="btn btn-ghost" href="./index.html">Back Home</a>
+    <a class="btn" href="./timeline.html">Memory</a>
+    <a class="btn" href="./audio.html">Audio</a>
+    <a class="btn" href="./quiz.html">My Letter</a>
+  </nav>
 
-    <footer>from kly ♡</footer>
-  </div>
+  <footer>from kly ♡</footer>
 
-<script>
-  // --- Candle logic ---
-  const flame   = document.getElementById('flame');
-  const candle  = document.getElementById('candle');
-  const message = document.getElementById('message');
-
-  let blown = false;
-  let audioStream = null, audioCtx = null, analyser = null, dataArray = null;
-
-  function confettiBurst(){
-    for(let i=0;i<90;i++){
-      const s=document.createElement('span');
-      s.className='confetti';
-      const hue = Math.floor(Math.random()*360);
-      s.style.background = `hsl(${hue} 90% 60%)`;
-      s.style.left = Math.random()*100+'vw';
-      s.style.animationDuration = (1.2 + Math.random()*1.2) + 's';
-      s.style.transform = `translateY(-10px) rotate(${Math.random()*180}deg)`;
-      document.body.appendChild(s);
-      setTimeout(()=>s.remove(), 2600);
+  <script>
+    // Tắt nến khi click (hoặc sau khi detect blow — nếu bạn đã có mic code)
+    const flame = document.getElementById('flame');
+    const wish  = document.getElementById('wish');
+    function extinguish(){
+      if(flame.classList.contains('off')) return;
+      flame.classList.add('off');
+      wish.textContent = "Yeyyyy my babi, no matter what happened, I’m always be by your side";
     }
-  }
-
-  function blowOut(){
-    if (blown) return;
-    blown = true;
-    flame.style.display = 'none';
-    // đổi nội dung NGAY TẠI CÙNG MỘT VỊ TRÍ / SIZE
-    message.textContent = "Yeyyyy my babi, no matter what happened, I’m always be by your side";
-    confettiBurst();
-  }
-
-  // Click/tap fallback
-  candle.addEventListener('click', blowOut);
-
-  // --- Microphone blow detection (Web Audio) ---
-  async function initMic(){
-    try{
-      audioStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:true, noiseSuppression:true }, video:false });
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const src = audioCtx.createMediaStreamSource(audioStream);
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 1024;
-      dataArray = new Uint8Array(analyser.frequencyBinCount);
-      src.connect(analyser);
-      listen();
-    }catch(e){
-      console.info("Mic not allowed; tap the candle to blow.");
-    }
-  }
-  function volumeEstimate(){
-    analyser.getByteTimeDomainData(dataArray);
-    let sum=0;
-    for(let i=0;i<dataArray.length;i++){
-      const v = (dataArray[i]-128)/128;
-      sum += v*v;
-    }
-    return Math.sqrt(sum/dataArray.length);
-  }
-  function listen(){
-    if (!analyser) return;
-    const rms = volumeEstimate();
-    if (rms > 0.14) blowOut();           // tăng giá trị để khó hơn, giảm để dễ hơn
-    if (!blown) requestAnimationFrame(listen);
-  }
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) initMic();
-</script>
+    flame.addEventListener('click', extinguish);
+    // (Nếu có listener microphone thổi nến, chỉ cần gọi extinguish() khi detect)
+  </script>
 </body>
 </html>
