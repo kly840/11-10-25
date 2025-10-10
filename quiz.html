@@ -31,10 +31,8 @@
     .quiz-box label{ display:block; font-weight:700; margin:12px 0 6px; }
     .quiz-box input{ width:100%; padding:10px 14px; border-radius:12px; border:1px solid rgba(89,2,2,.25); }
 
-    /* dòng “Only opens after the quiz” — đậm + to gấp đôi */
     .callout{ font-weight:800; font-size:clamp(18px,3.2vw,26px); margin:12px 0; }
 
-    /* nút trắng cho “unlock my letter ^^” */
     .btn-white{
       background:#fff; color:var(--accent); border:2px solid var(--accent);
       padding:10px 18px; border-radius:25px; font-weight:700; cursor:pointer;
@@ -46,7 +44,7 @@
     .right-img{ display:flex; justify-content:center; align-items:center; }
     .right-img img{ max-width:100%; height:auto; border-radius:16px; box-shadow:var(--shadow); }
 
-    /* bottom nav (4 nút), sát footer */
+    /* bottom nav: Back Home (trắng), Audio, Blow, Memory (đỏ) */
     .spacer{ flex:1 1 auto; }
     .bottom-nav{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:12px; margin-bottom:4px; }
     .btn-ghost{
@@ -69,7 +67,7 @@
       <!-- Column 1: quiz + nút unlock (trắng) -->
       <div class="quiz-box">
         <form id="quiz-form" autocomplete="off">
-          <!-- ⚠️ Nếu bạn đổi nội dung câu hỏi, đừng quên cập nhật mảng ANSWERS trong JS -->
+          <!-- 📝 CẬP NHẬT CÂU HỎI TẠI ĐÂY (nếu bạn đã đổi) -->
           <label>1) Longest call we had lasted how many hours?</label>
           <input type="text" name="q1" placeholder="hint: number (just the hours only)" required>
 
@@ -92,7 +90,7 @@
 
     <div class="spacer"></div>
 
-    <!-- Bottom nav: Back Home (trắng), Audio, Blow the Candle, Memory (3 nút sau đỏ) -->
+    <!-- Bottom nav: Back Home (trắng), Audio, Blow the Candle, Memory -->
     <nav class="bottom-nav">
       <a class="btn btn-ghost" href="./index.html">Back Home</a>
       <a class="btn" href="./audio.html">Audio</a>
@@ -106,51 +104,55 @@
 
   <!-- JS: kiểm tra đáp án → tạo token → mở thư -->
   <script>
-    // ==== CONFIG: CẬP NHẬT NẾU ĐÃ ĐỔI CÂU HỎI ====
-    // Nhập nhiều biến thể đúng cho mỗi câu (không phân biệt hoa/thường, bỏ ký tự thừa)
+    // ========= CONFIG =========
+    // 👉 CẬP NHẬT các đáp án đúng (nhiều biến thể) CHO 3 CÂU HỎI MỚI TẠI ĐÂY:
     const ANSWERS = {
-      q1: ["18","18h","18 hours"],  // ví dụ: nếu đổi câu hỏi -> cập nhật mảng này
-      q2: ["ocean after a storm","ocean after the storm","the ocean after a storm","the ocean after the storm","ocean after a big storm","ocean after the big storm"],
-      q3: ["ong ba anh","ông bà anh"]
+      q1: ["18", "18h", "18 hours"], 
+      q2: ["ocean after a storm", "ocean after the storm", "the ocean after a storm", "the ocean after the storm", "ocean after a big storm", "ocean after the big storm"],
+      q3: ["ong ba anh", "ông bà anh"]
     };
+    // SALT phải GIỐNG trong letter1.html
     const SALT = "kly840";
+    // URL thư
     const LETTER_URL = "./letters/letter-1.html";
 
-    // ===== Helpers =====
-    function normalize(s){
+    // ========= Helpers (ổn định đa trình duyệt) =========
+    function normalizeStrict(s){
       return (s||"")
         .toString()
         .trim()
         .toLowerCase()
-        .normalize("NFD")                 // bỏ dấu tiếng Việt
-        .replace(/\p{Diacritic}/gu,"")   // yêu cầu trình duyệt hỗ trợ Unicode property
-        .replace(/[^\p{L}\p{N}]+/gu,""); // bỏ mọi ký tự không phải chữ/số
+        .normalize("NFD")              // tách dấu
+        .replace(/[\u0300-\u036f]/g,"")// xoá dấu (diacritics) -> hỗ trợ tốt trên mọi trình duyệt modern
+        .replace(/[^a-z0-9]+/g,"");    // bỏ khoảng trắng & ký tự không phải chữ/số
     }
 
-    function isAllCorrect(formData){
+    function allCorrect(formData){
       return Object.keys(ANSWERS).every(key=>{
-        const user = normalize(formData.get(key));
+        const user = normalizeStrict(formData.get(key));
         const list = ANSWERS[key] || [];
-        return list.some(ok => normalize(ok) === user);
+        return list.some(ok => normalizeStrict(ok) === user);
       });
     }
 
     async function sha256Hex(str){
-      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      const bytes = new TextEncoder().encode(str);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
       return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
     }
 
-    async function buildCanonicalToken(){
-      // Ghép phương án đúng đầu tiên của từng câu (đã normalize) + SALT
-      const joined = Object.keys(ANSWERS).map(k => normalize(ANSWERS[k][0])).join("|") + "|" + SALT;
-      return sha256Hex(joined);
+    async function buildToken(){
+      // LẤY phương án đúng đầu tiên của mỗi câu (sau normalize) + SALT -> khớp với letter1.html
+      const canon = Object.keys(ANSWERS).map(k => normalizeStrict(ANSWERS[k][0])).join("|");
+      return sha256Hex(canon + "|" + SALT);
     }
 
-    // (optional) confetti
+    // (optional) confetti nhỏ xinh
     function confetti(){
+      const css = '@keyframes drop{to{transform:translateY(120vh) rotate(460deg);opacity:1}}';
+      const stl = document.createElement('style'); stl.textContent = css; document.head.appendChild(stl);
       for(let i=0;i<70;i++){
         const s=document.createElement('span');
-        s.className='confetti';
         s.style.position='fixed'; s.style.top='-10px';
         s.style.width=(6+Math.random()*6)+'px';
         s.style.height=(10+Math.random()*10)+'px';
@@ -163,11 +165,8 @@
         setTimeout(()=>s.remove(), 1800);
       }
     }
-    const style = document.createElement('style');
-    style.textContent = '@keyframes drop{to{transform:translateY(120vh) rotate(460deg);opacity:1}}';
-    document.head.appendChild(style);
 
-    // ===== Submit handler =====
+    // ========= Submit =========
     const form = document.getElementById('quiz-form');
     const msg  = document.getElementById('msg');
 
@@ -175,7 +174,7 @@
       e.preventDefault();
       const data = new FormData(form);
 
-      if(!isAllCorrect(data)){
+      if(!allCorrect(data)){
         msg.textContent = "Nahhh, try again! You don't love me that much🙄";
         return;
       }
@@ -183,11 +182,11 @@
       msg.textContent = "Ghê zạ đúng rùi! Unlocking letter… 💖";
       confetti();
 
-      // Tạo token và chuyển trang
-      const token = await buildCanonicalToken();
+      // build token + redirect
+      const token = await buildToken();
       const url = new URL(LETTER_URL, location.href);
       url.searchParams.set("t", token);
-      setTimeout(()=>{ location.href = url.toString(); }, 800);
+      setTimeout(()=>{ location.href = url.toString(); }, 700);
     });
   </script>
 </body>
