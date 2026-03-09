@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/>
+  <title>Our Milestones</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#fff5e7;
+      --paper:#fff;
+      --soft:#ece8d5;
+      --text:#590202;
+      --muted:#8a5b4a;
+      --accent:#ce2800;
+      --shadow:0 10px 28px rgba(0,0,0,.10);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.6 "Montserrat", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* logo */
+    .logo-top{
+      position:absolute;
+      top:18px;
+      left:18px;
+      display:inline-block;
+      z-index:20;
+    }
+    .logo-top img{
+      height:48px;
+      width:auto;
+      opacity:.95;
+      transition:transform .12s ease, filter .12s ease;
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,.08));
+    }
+    .logo-top:hover img{
+      transform:scale(1.06);
+      filter:drop-shadow(0 6px 14px rgba(0,0,0,.16));
+    }
+
+    .page{
+      min-height:100dvh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    header{
+      padding:42px 18px 12px;
+      text-align:center;
+    }
+
+    h1{
+      margin:18px 0 6px;
+      color:var(--accent);
+      font-size:clamp(34px, 6vw, 56px);
+      line-height:1.1;
+    }
+
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      font-size:clamp(14px, 2.2vw, 18px);
+    }
+
+    main{
+      width:min(1080px, 94vw);
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:22px;
+      padding:8px 0 20px;
+      flex:1 1 auto;
+    }
+
+    .btn-row{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+
+    .btn{
+      display:inline-block;
+      background:var(--accent);
+      color:#fff;
+      border:0;
+      padding:10px 18px;
+      border-radius:25px;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease;
+      box-shadow:var(--shadow);
+    }
+    .btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 14px 30px rgba(0,0,0,.14);
+      text-decoration:none;
+    }
+
+    .hero-card,
+    .letter-card{
+      background:var(--paper);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+    }
+
+    .hero-card{
+      padding:22px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .stat-box{
+      background:var(--soft);
+      border-radius:18px;
+      padding:18px;
+      text-align:center;
+    }
+
+    .stat-label{
+      font-size:13px;
+      letter-spacing:.02em;
+      color:var(--muted);
+      margin-bottom:8px;
+      text-transform:uppercase;
+      font-weight:700;
+    }
+
+    .stat-value{
+      font-size:clamp(22px, 4vw, 34px);
+      line-height:1.2;
+      font-weight:800;
+      color:var(--accent);
+    }
+
+    .stat-sub{
+      margin-top:8px;
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .section-title{
+      font-size:clamp(24px, 4vw, 34px);
+      margin:0 0 10px;
+      color:var(--accent);
+    }
+
+    .section-note{
+      margin:0;
+      color:var(--muted);
+    }
+
+    .letter-card{
+      padding:22px;
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:22px;
+      align-items:start;
+    }
+
+    .letter-meta{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .stamp{
+      width:40px;
+      height:40px;
+      object-fit:contain;
+      opacity:.95;
+    }
+
+    .letter-title{
+      margin:0 0 10px;
+      font-size:clamp(24px, 4vw, 36px);
+      line-height:1.15;
+      color:var(--text);
+    }
+
+    .letter-body{
+      font-size:16px;
+      line-height:1.8;
+    }
+
+    .letter-body p{
+      margin:0 0 14px;
+    }
+
+    /* gallery */
+    .gallery-shell{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .gallery-frame{
+      position:relative;
+      width:100%;
+      aspect-ratio:1/1;
+      border-radius:20px;
+      overflow:hidden;
+      background:var(--soft);
+    }
+
+    .gallery-slide{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      transition:opacity .5s ease;
+    }
+
+    .gallery-slide.active{
+      opacity:1;
+    }
+
+    .gallery-slide img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .gallery-caption{
+      font-size:14px;
+      color:var(--muted);
+      text-align:center;
+      min-height:22px;
+    }
+
+    .gallery-dots{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .gallery-dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      border:0;
+      background:rgba(206,40,0,.2);
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease;
+    }
+
+    .gallery-dot.active{
+      background:var(--accent);
+      transform:scale(1.15);
+    }
+
+    footer{
+      text-align:center;
+      font-size:13px;
+      color:#7c3d2f;
+      padding:8px 0 24px;
+    }
+
+    @media (max-width: 860px){
+      .hero-grid,
+      .letter-card{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="./index.html" class="logo-top" aria-label="Home">
+    <img src="./assets/heart_logo.png" alt="logo">
+  </a>
+
+  <div class="page">
+    <header>
+      <h1>our milestones ♡</h1>
+      <p class="subtitle">since 7:00 AM • 09/02/2026 • vietnam time</p>
+
+      <div class="btn-row">
+        <a class="btn" href="./index.html">Birthday Home</a>
+        <a class="btn" href="./timeline.html">Memory</a>
+        <a class="btn" href="./quiz.html">My Letter</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- countdown / count-up -->
+      <section class="hero-card">
+        <h2 class="section-title">countdown</h2>
+        <p class="section-note">for us, for what has happened, and for what is still waiting ahead.</p>
+
+        <div class="hero-grid" style="margin-top:16px;">
+          <div class="stat-box">
+            <div class="stat-label">we've been together for</div>
+            <div class="stat-value" id="togetherValue">--</div>
+            <div class="stat-sub" id="togetherSub">loading...</div>
+          </div>
+
+          <div class="stat-box">
+            <div class="stat-label">countdown to next monthly anniversary</div>
+            <div class="stat-value" id="nextValue">--</div>
+            <div class="stat-sub" id="nextSub">loading...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- letters -->
+      <section class="letter-card">
+        <div>
+          <div class="letter-meta">
+            <img src="./assets/heart_logo.png" alt="" class="stamp">
+            <span>1-month anniversary • unlocked</span>
+          </div>
+
+          <h2 class="letter-title">one month with you</h2>
+
+          <div class="letter-body">
+            <p>
+              Hi babi,
+            </p>
+            <p>
+              It’s only been one month, but somehow it already feels like you’ve become such a soft, warm, important part of my everyday life.
+            </p>
+            <p>
+              Thank you for being here, for choosing us, for making even the smallest moments feel special. I know this is just the beginning, and there are still so many anniversaries ahead that haven’t happened yet — but I already want to write to every version of us that will get there.
+            </p>
+            <p>
+              So here is the first one. The first little milestone. The first proof that what we have is real, growing, and worth keeping.
+            </p>
+            <p>
+              Happy one-month anniversary, my Idr bf ♡
+            </p>
+            <p>
+              Love, <br>
+              Kly
+            </p>
+          </div>
+        </div>
+
+        <!-- auto-play gallery -->
+        <div class="gallery-shell">
+          <div class="gallery-frame" id="galleryFrame">
+            <!-- Replace these image paths with your real images -->
+            <div class="gallery-slide active">
+              <img src="./assets/kly1.png" alt="gallery 1">
+            </div>
+            <div class="gallery-slide">
+              <img src="./assets/kly2.png" alt="gallery 2">
+            </div>
+            <div class="gallery-slide">
+              <img src="./assets/kly3.png" alt="gallery 3">
+            </div>
+            <div class="gallery-slide">
+              <img src="./assets/nhan1.png" alt="gallery 4">
+            </div>
+          </div>
+
+          <div class="gallery-caption" id="galleryCaption">one moment at a time ♡</div>
+
+          <div class="gallery-dots" id="galleryDots"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>from kly ♡</footer>
+  </div>
+
+  <script>
+    // ===== relationship start time =====
+    // Vietnam time: 7:00 AM, 09/02/2026 -> interpreted as 09 Feb 2026
+    const RELATIONSHIP_START = new Date("2026-02-09T07:00:00+07:00");
+
+    function plural(n, word) {
+      return `${n} ${word}${n === 1 ? "" : "s"}`;
+    }
+
+    function getNextMonthiversary(start, now) {
+      const next = new Date(start);
+      while (next <= now) {
+        next.setMonth(next.getMonth() + 1);
+      }
+      return next;
+    }
+
+    function formatDuration(ms) {
+      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = totalSeconds % 60;
+      return { days, hours, mins, secs };
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+
+      // together for
+      const togetherMs = now - RELATIONSHIP_START;
+      const together = formatDuration(togetherMs);
+
+      document.getElementById("togetherValue").textContent =
+        `${together.days}d ${together.hours}h ${together.mins}m ${together.secs}s`;
+
+      document.getElementById("togetherSub").textContent =
+        `since ${RELATIONSHIP_START.toLocaleString("en-GB", {
+          timeZone: "Asia/Ho_Chi_Minh",
+          hour: "2-digit",
+          minute: "2-digit",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        })}`;
+
+      // next monthiversary
+      const nextMilestone = getNextMonthiversary(RELATIONSHIP_START, now);
+      const leftMs = nextMilestone - now;
+      const left = formatDuration(leftMs);
+
+      document.getElementById("nextValue").textContent =
+        `${left.days}d ${left.hours}h ${left.mins}m ${left.secs}s`;
+
+      document.getElementById("nextSub").textContent =
+        `next one: ${nextMilestone.toLocaleDateString("en-GB", {
+          timeZone: "Asia/Ho_Chi_Minh",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        })}`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ===== auto-play gallery =====
+    const slides = Array.from(document.querySelectorAll(".gallery-slide"));
+    const dotsWrap = document.getElementById("galleryDots");
+    let current = 0;
+    let timer = null;
+
+    slides.forEach((_, index) => {
+      const dot = document.createElement("button");
+      dot.className = "gallery-dot" + (index === 0 ? " active" : "");
+      dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+      dot.addEventListener("click", () => {
+        goToSlide(index);
+        restartAutoplay();
+      });
+      dotsWrap.appendChild(dot);
+    });
+
+    const dots = Array.from(document.querySelectorAll(".gallery-dot"));
+
+    function goToSlide(index) {
+      slides[current].classList.remove("active");
+      dots[current].classList.remove("active");
+
+      current = index;
+
+      slides[current].classList.add("active");
+      dots[current].classList.add("active");
+    }
+
+    function nextSlide() {
+      goToSlide((current + 1) % slides.length);
+    }
+
+    function startAutoplay() {
+      timer = setInterval(nextSlide, 3000);
+    }
+
+    function restartAutoplay() {
+      clearInterval(timer);
+      startAutoplay();
+    }
+
+    startAutoplay();
+  </script>
+</body>
+</html>
